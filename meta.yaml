@@ -1,0 +1,20 @@
+package:
+  name: anaconda-notebook
+  version: 2.4
+
+requirements:
+  run:
+    - python
+    - ipython
+    - pyzmq
+    - tornado
+    - jinja2
+
+app:
+  entry: anaconda-notebook                              [not osx]
+  entry: open ${PREFIX}/bin/anaconda_notebook.command   [osx]
+  summary: Anaconda notebook (enhanced IPython)
+
+about:
+  home: http://ipython.org/notebook.html
+  license: BSD
