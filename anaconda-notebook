@@ -3,30 +3,24 @@
 import logging
 import sys
 import IPython
-
-from os import path
+from os import path, environ
 
 logger = logging.getLogger(__name__)
-
 
 ipython_dir = path.join(path.dirname(
     path.realpath(__file__)), '../etc/ipython_dir')
 
 args = sys.argv
-if len(args) == 1:
-    args = None
-else:
-    args = args[1:]
+args = args[1:]
 
-if '--profile-dir' in args:
+if '--profile-dir' in args or environ['IPYTHONDIR']:
     logger.warn('You may not have access to anaconda-notebook features')
 else:
     args.append('--ipython-dir')
     args.append(ipython_dir)
-    os.environ['IPYTHONDIR'] = ipython_dir
+    environ['IPYTHONDIR'] = ipython_dir
 
 args.append('--profile')
 args.append('anaconda-notebook')
-args.append('notebook')
 
-IPython.start_ipython(argv=args)
+IPython.start_ipython(argv=['notebook'] + args)
