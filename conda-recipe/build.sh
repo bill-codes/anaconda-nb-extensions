@@ -7,7 +7,7 @@ ETC=$PREFIX/etc/
 mkdir -p $BIN
 mkdir -p $ETC
 
-cp -rf $RECIPE_DIR/ipython_config/ $ETC/ipython_dir
-cp anaconda-notebook $BIN/
+cp -rf $RECIPE_DIR/../ipython_config/ $ETC/ipython_dir
+cp $RECIPE_DIR/../anaconda-notebook $BIN/
 
 chmod +x $EXEC
