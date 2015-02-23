@@ -13,7 +13,7 @@ ipython_dir = path.join(path.dirname(
 args = sys.argv
 args = args[1:]
 
-if '--profile-dir' in args or environ['IPYTHONDIR']:
+if '--profile-dir' in args or 'IPYTHONDIR' in environ:
     logger.warn('You may not have access to anaconda-notebook features')
 else:
     args.append('--ipython-dir')
