@@ -11,7 +11,8 @@ requirements:
     - jinja2
 
 app:
-  entry: anaconda-notebook                              [not osx]
+  entry: anaconda-notebook.bat                          [win]
+  entry: anaconda-notebook                              [linux]
   entry: open ${PREFIX}/bin/anaconda_notebook.command   [osx]
   summary: Anaconda notebook (enhanced IPython)
 
