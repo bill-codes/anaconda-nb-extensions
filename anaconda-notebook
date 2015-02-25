@@ -42,39 +42,40 @@ class AnacondaNotebook(object):
                 '--ipython-dir', ipython_dir
             ]
         )
-        shutil.copy(
-            os.path.join(self.anaconda_dir, 'profile_anaconda-notebook',
-                'static', 'custom', 'custom.css'),
-            os.path.join(self.ipython_dir, 'profile_anaconda-notebook',
-                'static', 'custom','custom.css')
-        )
-        shutil.copy(
-            os.path.join(self.anaconda_dir, 'profile_anaconda-notebook',
-                'static', 'custom', 'custom.js'),
-            os.path.join(self.ipython_dir, 'profile_anaconda-notebook',
-                'static', 'custom', 'custom.js')
-        )
-        shutil.copy(
-            os.path.join(self.anaconda_dir, 'profile_anaconda-notebook',
+
+        files = [
+            os.path.join('profile_anaconda-notebook', 'static',
+                'custom', 'custom.css'),
+            os.path.join('profile_anaconda-notebook', 'static',
+                'custom', 'custom.js'),
+            os.path.join('profile_anaconda-notebook',
                 'ipython_config.py'),
-            os.path.join(self.ipython_dir, 'profile_anaconda-notebook',
-                'ipython_config.py')
-        )
-        shutil.copy(
-            os.path.join(self.anaconda_dir, 'profile_anaconda-notebook',
+            os.path.join('profile_anaconda-notebook',
                 'ipython_nbconvert_config.py'),
-            os.path.join(self.ipython_dir, 'profile_anaconda-notebook',
-                'ipython_nbconvert_config.py')
-        )
-        shutil.copy(
-            os.path.join(self.anaconda_dir, 'profile_anaconda-notebook',
-                'ipython_notebook_config.py'),
-            os.path.join(self.ipython_dir, 'profile_anaconda-notebook',
+            os.path.join('profile_anaconda-notebook',
                 'ipython_notebook_config.py')
+        ]
+
+        extensions = ['rcm', 'calico-spell-check', 'calico-document-tools',
+                'calico-cell-tools']
+
+        for pfile in files:
+            self._copy_pfile(pfile)
+
+        for extension in extensions:
+            self._copy_extension(extension)
+
+    def _copy_pfile(self, pfile):
+        # Can't use `file` as variabl
+        shutil.copy(
+            os.path.join(self.anaconda_dir, pfile),
+            os.path.join(self.ipython_dir, pfile)
         )
+
+    def _copy_extension(self, extension):
         shutil.copytree(
-            os.path.join(self.anaconda_dir, 'nbextensions', 'rcm'),
-            os.path.join(self.ipython_dir, 'nbextensions', 'rcm')
+            os.path.join(self.anaconda_dir, 'nbextensions', extension),
+            os.path.join(self.ipython_dir, 'nbextensions', extension)
         )
 
 
@@ -87,3 +88,4 @@ else:
 
 anaconda_notebook = AnacondaNotebook(ipython_dir)
 anaconda_notebook.run(sys.argv[1:])
+
