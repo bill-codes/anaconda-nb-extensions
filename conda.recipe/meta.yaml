@@ -9,6 +9,7 @@ requirements:
     - pyzmq
     - tornado
     - jinja2
+    - jsonschema
 
 app:
   entry: anaconda-notebook.bat                          [win]
