@@ -1,13 +1,9 @@
 #!/bin/bash
 
-BIN=$PREFIX/bin
-EXEC=$BIN/anaconda-notebook
-ETC=$PREFIX/etc/
+# ipython_dir content into $PREFIX/config
+mkdir -p $PREFIX/config/ipython_dir
+cp -rf config/ipython_dir/* $PREFIX/config/ipython_dir
 
-mkdir -p $BIN
-mkdir -p $ETC
-
-cp -rf $RECIPE_DIR/../ipython_dir/ $ETC/ipython_dir
-cp $RECIPE_DIR/../anaconda-notebook $BIN/
-
-chmod +x $EXEC
+# notebook wrapper script into $PREFIX/bin
+mkdir -p $PREFIX/bin
+cp -rf bin/* $PREFIX/bin
