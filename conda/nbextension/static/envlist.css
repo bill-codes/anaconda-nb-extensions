@@ -1,3 +1,7 @@
 .action_col {
     text-align: right;
 }
+
+.list_item > div input.flush-left {
+    margin-left: 4px;
+}

@@ -205,17 +205,10 @@ define([
 
         var selected = that.data.selected ? 'check-square' : 'square';
 
-        var selection_col = common.column('selected', 1);
-        var name_col      = common.column('name', 3).text(this.data.name);
+        var name_col      = common.column('name', 3);
         var version_col   = common.column('version', 1).text(this.data.version);
         var build_col     = common.column('build', 1).text(this.data.build);
         var avail_col     = common.column('available', 2).text(this.data.avail);
-
-        var info_button   = common.icon('Info', 'info-circle');
-        info_button.click(function() {
-            that.show_info();
-        });
-        selection_col.append(info_button);
 
         function select_click() {
             that.data.selected = ! that.data.selected;
@@ -226,13 +219,15 @@ define([
         var selected_box = $('<input/>')
                 .attr('type', 'checkbox')
                 .attr('title', 'Click to select this package')
+                .addClass('flush-left')
                 .click(select_click)
-                .appendTo(selection_col);
+                .appendTo(name_col);
+
+        $('<span/>').text(this.data.name).appendTo(name_col);
 
         this.avail_col = avail_col;
 
         this.element.empty()
-            .append(selection_col)
             .append(name_col)
             .append(version_col)
             .append(build_col)
