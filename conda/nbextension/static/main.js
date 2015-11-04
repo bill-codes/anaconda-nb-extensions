@@ -24,11 +24,6 @@ define(function(require) {
         '      <div class="action_col  col-xs-2">Action</div>',
         '    </div>',
         '  </div>',
-        '</div>'
-    ].join('\n'));
-
-    var pkg_html = $([
-        '<div id="pkgs" class="tab-pane">',
         '  <div id="pkg_toolbar" class="list_toolbar row">',
         '    <div class="col-xs-6 no-padding">',
         '      <span id="pkg_list_info" class="toolbar_info">Installed Conda packages</span>',
@@ -63,7 +58,7 @@ define(function(require) {
             .attr('href', base_url + 'nbextensions/conda-envs/envlist.css')
         );
 
-        // Configure Environments tab
+        // Configure Conda tab
         $(".tab-content").append(env_html);
         $("#tabs").append(
             $('<li>')
@@ -71,7 +66,7 @@ define(function(require) {
                 $('<a>')
                 .attr('href', '#envs')
                 .attr('data-toggle', 'tab')
-                .text('Environments')
+                .text('Conda')
                 .click(function (e) {
                     window.history.pushState(null, null, '#envs');
                 })
@@ -81,22 +76,6 @@ define(function(require) {
             base_url: IPython.notebook_list.base_url,
         });
         env_list.load_list();
-
-        // Configure Packages tab
-        $(".tab-content").append(pkg_html);
-        $("#tabs").append(
-            $('<li>')
-            .append(
-                $('<a>')
-                .attr('href', '#pkgs')
-                .attr('data-toggle', 'tab')
-                .text('Packages')
-                .click(function (e) {
-                    window.history.pushState(null, null, '#pkgs');
-                    pkg_list.set_environment(env_list.get_default_env());
-                })
-            )
-        );
         var pkg_list = new pkglist.PkgList('#pkg_list', {
             base_url: IPython.notebook_list.base_url,
         });
