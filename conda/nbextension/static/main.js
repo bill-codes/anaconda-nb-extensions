@@ -80,7 +80,6 @@ define(function(require) {
         );
         var env_list = new envlist.EnvList('#env_list', {
             base_url: IPython.notebook_list.base_url,
-            notebook_path: IPython.notebook_list.notebook_path,
         });
         env_list.load_list();
 
@@ -101,7 +100,6 @@ define(function(require) {
         );
         var pkg_list = new pkglist.PkgList('#pkg_list', {
             base_url: IPython.notebook_list.base_url,
-            notebook_path: IPython.notebook_list.notebook_path
         });
     }
     return {

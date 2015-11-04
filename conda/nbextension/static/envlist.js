@@ -21,7 +21,6 @@ define([
         options = options || {};
         this.options = options;
         this.base_url = options.base_url || utils.get_body_data("baseUrl");
-        this.notebook_path = options.notebook_path || utils.get_body_data("notebookPath");
     };
 
 
@@ -81,7 +80,6 @@ define([
 
         this.element = $(element);
         this.base_url = options.base_url || utils.get_body_data("baseUrl");
-        this.notebook_path = options.notebook_path || utils.get_body_data("notebookPath");
         this.data = null;
         this.owner = owner;
         this.element.addClass('list_item').addClass("row");

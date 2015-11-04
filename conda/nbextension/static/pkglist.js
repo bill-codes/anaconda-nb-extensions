@@ -18,7 +18,7 @@ define([
         options = options || {};
         this.options = options;
         this.base_url = options.base_url || utils.get_body_data("baseUrl");
-        this.notebook_path = options.notebook_path || utils.get_body_data("notebookPath");
+        this.packages = {};
         this.selection = [];
     };
 
@@ -58,6 +58,7 @@ define([
 
     PkgList.prototype.clear_list = function () {
         this.element.children('.list_item').remove();
+        this.packages = [];
     };
 
 
@@ -67,11 +68,13 @@ define([
         this.clear_list();
         var len = data.length;
         for (var i=0; i<len; i++) {
+            var d = data[i];
             var element = $('<div/>');
             var item = new Package(element, this, this.options);
-            item.update(data[i]);
+            item.update(d);
             element.data('item', item);
             this.element.append(element);
+            this.packages[d.name] = item;
         }
     };
 
@@ -96,15 +99,15 @@ define([
             packages = ['--all'];
         }
 
-        error_callback = common.MakeErrorCallback('Error', 'An error occurred while checking for package updates.');
+        var error_callback = common.MakeErrorCallback('Error', 'An error occurred while checking for package updates.');
 
         function success_callback(data, status, xhr) {
             var len = data.length;
-            for (var i=0; i<len; i++) {
+            for(var i = 0; i < len; i++) {
                 // entries contain name, version, build
+                var d = data[i];
+                that.packages[d.name].set_available(d.version, d.build);
             }
-            //that.update(data);
-            //that.owner.load_list();
         }
         this.action('check', packages, success_callback, error_callback);
     };
@@ -187,7 +190,6 @@ define([
 
         this.element = $(element);
         this.base_url = options.base_url || utils.get_body_data("baseUrl");
-        this.notebook_path = options.notebook_path || utils.get_body_data("notebookPath");
         this.data = null;
         this.owner = owner;
         this.element.addClass('list_item').addClass("row");
@@ -227,6 +229,8 @@ define([
                 .click(select_click)
                 .appendTo(selection_col);
 
+        this.avail_col = avail_col;
+
         this.element.empty()
             .append(selection_col)
             .append(name_col)
@@ -235,6 +239,9 @@ define([
             .append(avail_col);
     };
 
+    Package.prototype.set_available = function(version, build) {
+        this.avail_col.text(version + ' ' + build);
+    };
 
     return {
         'PkgList': PkgList,
