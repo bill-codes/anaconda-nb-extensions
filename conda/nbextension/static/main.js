@@ -93,7 +93,7 @@ define(function(require) {
             $('<link>')
             .attr('rel', 'stylesheet')
             .attr('type', 'text/css')
-            .attr('href', base_url + 'nbextensions/conda-envs/envlist.css')
+            .attr('href', base_url + 'nbextensions/conda-envs/conda.css')
         );
 
         // Configure Conda tab
