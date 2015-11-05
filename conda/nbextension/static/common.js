@@ -8,9 +8,9 @@ define([
 
     function SuccessWrapper(success_callback, error_callback) {
         return function(data, status, xhr) {
-            if(data.error) {
+            if(data.error || data.message) {
                 // Conda returned a dict with error info
-                error_callback(xhr, status, data.error);
+                error_callback(xhr, status, data.error || data.message);
             }
             else {
                 success_callback(data, status, xhr);

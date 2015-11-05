@@ -14,6 +14,9 @@ define([
         // EnvList represents the list of Environments in that tab
 
         this.selector = selector;
+        this.pkg_list = options.pkg_list;
+        this.avail_list = options.avail_list;
+
         if (this.selector !== undefined) {
             this.element = $(selector);
             this.bind_events();
@@ -67,6 +70,9 @@ define([
                 this.default_env = data[i];
             }
         }
+        this.pkg_list.set_environment(this.default_env);
+        this.avail_list.set_environment(this.default_env);
+        $('#env_list_info').text(len + ' Conda environments');
     };
 
 
@@ -183,10 +189,15 @@ define([
         var that = this;
         that.data = data;
 
-        var env_url = utils.url_join_encode(that.base_url, 'environments', that.data.name);
-        var export_url = utils.url_join_encode(env_url, 'export');
+        var env_link = common.link('#', this.data.name);
+        env_link.click(function() {
+            that.owner.pkg_list.set_environment(that.data);
+            that.owner.avail_list.set_environment(that.data);
+        });
 
-        var name_col      = common.column('name', 2).append(common.link(env_url, this.data.name));
+        var export_url = utils.url_join_encode(that.base_url, 'environments', that.data.name, 'export');
+
+        var name_col      = common.column('name', 2).append(env_link);
         var dir_col       = common.column('dir', 4).text(this.data.dir);
         var default_col   = common.column('default', 1).addClass('text-center');
         var action_col    = common.column('action', 2);

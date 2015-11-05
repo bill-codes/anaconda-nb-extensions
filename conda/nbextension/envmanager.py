@@ -5,6 +5,7 @@ import json
 import logging
 import os
 
+from pkg_resources import parse_version
 from subprocess import check_output, CalledProcessError
 
 from tornado import web
@@ -96,6 +97,11 @@ class EnvManager(LoggingConfigurable):
             # no action plan returned means everything is already up to date
             return []
 
+
+    def install_packages(self, env, packages):
+        output = self._execute('conda install -y -q --json -n', env, *packages)
+        return json.loads(output)
+
     def update_packages(self, env, packages):
         output = self._execute('conda update -y -q --json -n', env, *packages)
         return json.loads(output)
@@ -103,3 +109,28 @@ class EnvManager(LoggingConfigurable):
     def remove_packages(self, env, packages):
         output = self._execute('conda remove -y -q --json -n', env, *packages)
         return json.loads(output)
+
+    def package_search(self, q):
+        output = self._execute('conda search --json', q)
+        data = json.loads(output)
+
+        if 'error' in data:
+            # we didn't get back a list of packages, we got a dictionary with error info
+            return data
+
+        packages = []
+
+        for name, entries in data.items():
+            max_version = None
+            max_version_entry = None
+
+            for entry in entries:
+                version = parse_version(entry.get('version', ''))
+
+                if max_version is None or version > max_version:
+                    max_version = version
+                    max_version_entry = entry
+
+            packages.append(max_version_entry)
+        return sorted(packages, key=lambda entry:entry.get('name'))
+

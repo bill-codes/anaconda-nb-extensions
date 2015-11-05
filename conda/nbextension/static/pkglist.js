@@ -34,8 +34,12 @@ define([
 
 
     PkgList.prototype.set_environment = function(env) {
-        this.env = env;
-        this.load_list();
+        this.clear_list();
+
+        if(env) {
+            this.env = env;
+            this.load_list();
+        }
     }
 
     PkgList.prototype.load_list = function() {
@@ -63,7 +67,7 @@ define([
 
 
     PkgList.prototype.load_list_success = function (data, status, xhr) {
-        // Process response from the /pkgironments endpoint
+        // Process response from the /environments endpoint
 
         this.clear_list();
         var len = data.length;
@@ -76,6 +80,8 @@ define([
             this.element.append(element);
             this.packages[d.name] = item;
         }
+        this.selection = [];
+        $('#pkg_list_info').text(len + ' packages in environment "' + this.env.name + '"');
     };
 
 
@@ -106,7 +112,13 @@ define([
             for(var i = 0; i < len; i++) {
                 // entries contain name, version, build
                 var d = data[i];
-                that.packages[d.name].set_available(d.version, d.build);
+                var entry = that.packages[d.name];
+
+                // See if there is an existing entry.
+                // Usually there will be, but an update might pull in a new package as a dependency.
+                if(entry) {
+                    entry.set_available(d.version, d.build);
+                }
             }
         }
         this.action('check', packages, success_callback, error_callback);
@@ -205,10 +217,10 @@ define([
 
         var selected = that.data.selected ? 'check-square' : 'square';
 
-        var name_col      = common.column('name', 3);
-        var version_col   = common.column('version', 1).text(this.data.version);
-        var build_col     = common.column('build', 1).text(this.data.build);
-        var avail_col     = common.column('available', 2).text(this.data.avail);
+        var name_col      = common.column('name', 5);
+        var version_col   = common.column('version', 2).text(this.data.version);
+        var build_col     = common.column('build', 2).text(this.data.build);
+        var avail_col     = common.column('available', 3).text(this.data.avail);
 
         function select_click() {
             that.data.selected = ! that.data.selected;
@@ -235,11 +247,11 @@ define([
     };
 
     Package.prototype.set_available = function(version, build) {
-        this.avail_col.text(version + ' ' + build);
+        this.avail_col.text(version + '-' + build);
     };
 
     return {
-        'PkgList': PkgList,
-        'Package': Package,
+        'PkgList':   PkgList,
+        'Package':   Package
     };
 });

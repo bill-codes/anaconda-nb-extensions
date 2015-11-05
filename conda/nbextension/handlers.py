@@ -75,7 +75,9 @@ class EnvPkgActionHandler(EnvHandler):
         if not packages:
             raise web.HTTPError(400)
 
-        if action == 'update':
+        if action == 'install':
+            resp = self.env_manager.install_packages(env, packages)
+        elif action == 'update':
             resp = self.env_manager.update_packages(env, packages)
         elif action == 'check':
             resp = self.env_manager.check_update(env, packages)
@@ -87,6 +89,15 @@ class EnvPkgActionHandler(EnvHandler):
         self.finish(json.dumps(resp))
 
 
+class SearchHandler(EnvHandler):
+
+    @web.authenticated
+    def get(self):
+        q = self.get_argument('q')
+        self.finish(json.dumps(self.env_manager.package_search(q)))
+
+
+
 #-----------------------------------------------------------------------------
 # URL to handler mappings
 #-----------------------------------------------------------------------------
@@ -96,13 +107,14 @@ _env_action_regex = r"(?P<action>export|clone|delete)"
 _env_regex = r"(?P<env>[^\/]+)" # there is almost no text that is invalid
 
 _pkg_regex = r"(?P<pkg>[^\/]+)"
-_pkg_action_regex = r"(?P<action>update|check|remove)"
+_pkg_action_regex = r"(?P<action>install|update|check|remove)"
 
 default_handlers = [
     (r"/environments", MainEnvHandler),
     (r"/environments/%s/packages/%s" % (_env_regex, _pkg_action_regex), EnvPkgActionHandler),
     (r"/environments/%s/%s" % (_env_regex, _env_action_regex), EnvActionHandler),
     (r"/environments/%s" % _env_regex, EnvHandler),
+    (r"/packages/search", SearchHandler),
 ]
 
 
@@ -124,3 +136,4 @@ def load_jupyter_server_extension(nbapp):
         (ujoin(base_url, pat), handler)
         for pat, handler in default_handlers
     ])
+

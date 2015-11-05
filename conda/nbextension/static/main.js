@@ -3,9 +3,10 @@ define(function(require) {
     var IPython = require('base/js/namespace');
     var envlist = require('./envlist');
     var pkglist = require('./pkglist');
+    var available = require('./available');
 
     var env_html = $([
-        '<div id="envs" class="tab-pane">',
+        '<div id="conda" class="tab-pane">',
         '  <div id="env_toolbar" class="list_toolbar row">',
         '    <div class="col-xs-7 no-padding">',
         '      <span id="env_list_info" class="toolbar_info">Conda environments</span>',
@@ -17,18 +18,51 @@ define(function(require) {
         '    </div>',
         '  </div>',
         '  <div id="env_list" class="list_container">',
-        '    <div id="env_list_header" class="row list_header">',
+        '    <div id="env_list_header" class="list_header row">',
         '      <div class="name_col    col-xs-2">Name</div>',
         '      <div class="default_col col-xs-1 text-center">Default?</div>',
         '      <div class="dir_col     col-xs-4">Directory</div>',
         '      <div class="action_col  col-xs-2">Action</div>',
         '    </div>',
+        '    <div id="env_list_body" class="scrollable">',
+        '    </div>',
         '  </div>',
+
+        '  <div class="half_width" style="float: left">',
+        '  <div id="avail_toolbar" class="list_toolbar row">',
+        '    <div class="col-xs-5 no-padding">',
+        '      <span id="avail_list_info" class="toolbar_info">Available packages</span>',
+        '    </div>',
+        '    <div class="col-xs-4 no-padding tree-buttons">',
+        '      <span id="avail_buttons" class="toolbar_buttons pull-right">',
+        '      <input id="searchbox" title="Search" placeholder="Search..." class="form-control small-input"/>',
+        '      </span>',
+        '    </div>',
+        '    <div class="col-xs-3 no-padding tree-buttons">',
+        '      <span id="avail_buttons" class="toolbar_buttons pull-right">',
+        '      <button id="search" class="btn btn-default btn-xs"><i class="fa fa-search"></i></button>',
+        '      <button id="refresh_avail_list" title="Refresh package list" class="btn btn-default btn-xs"><i class="fa fa-refresh"></i></button>',
+        '      <button id="install" title="Install selected packages" class="btn btn-default btn-xs"><i class="fa fa-arrow-right"></i></button>',
+        '      </span>',
+        '    </div>',
+        '  </div>',
+        '  <div id="avail_list" class ="list_container">',
+        '    <div id="avail_list_header" class="list_header row">',
+        '      <div class="name_col     col-xs-4">Name</div>',
+        '      <div class="version_col  col-xs-2">Version</div>',
+        '      <div class="channel_col  col-xs-6">Channel</div>',
+        '    </div>',
+        '    <div id="avail_list_body" class="scrollable">',
+        '    </div>',
+        '  </div>',
+        '  </div>',
+
+        '  <div class="half_width" style="float: right">',
         '  <div id="pkg_toolbar" class="list_toolbar row">',
-        '    <div class="col-xs-6 no-padding">',
+        '    <div class="col-xs-8 no-padding">',
         '      <span id="pkg_list_info" class="toolbar_info">Installed Conda packages</span>',
         '    </div>',
-        '    <div class="col-xs-6 no-padding tree-buttons">',
+        '    <div class="col-xs-4 no-padding tree-buttons">',
         '      <span id="pkg_buttons" class="toolbar_buttons pull-right">',
         '      <button id="refresh_pkg_list" title="Refresh package list"     class="btn btn-default btn-xs"><i class="fa fa-refresh"       ></i></button>',
         '      <button id="check_update"     title="Check for Updates"        class="btn btn-default btn-xs"><i class="fa fa-check"         ></i></button>',
@@ -38,14 +72,18 @@ define(function(require) {
         '    </div>',
         '  </div>',
         '  <div id="pkg_list" class ="list_container">',
-        '    <div id="pkg_list_header" class="row list_header">',
-        '      <div class="name_col     col-xs-3">Name</div>',
-        '      <div class="version_col  col-xs-1">Version</div>',
-        '      <div class="build_col    col-xs-1">Build</div>',
-        '      <div class="avail_col    col-xs-2">Available</div>',
+        '    <div id="pkg_list_header" class="list_header row">',
+        '      <div class="name_col     col-xs-5">Name</div>',
+        '      <div class="version_col  col-xs-2">Version</div>',
+        '      <div class="build_col    col-xs-2">Build</div>',
+        '      <div class="avail_col    col-xs-3">Available</div>',
+        '    </div>',
+        '    <div id="pkg_list_body" class="scrollable">',
         '    </div>',
         '  </div>',
+        '  </div>',
         '</div>'
+
     ].join('\n'));
 
     function load() {
@@ -64,21 +102,28 @@ define(function(require) {
             $('<li>')
             .append(
                 $('<a>')
-                .attr('href', '#envs')
+                .attr('href', '#conda')
                 .attr('data-toggle', 'tab')
                 .text('Conda')
                 .click(function (e) {
-                    window.history.pushState(null, null, '#envs');
+                    window.history.pushState(null, null, '#conda');
                 })
             )
         );
-        var env_list = new envlist.EnvList('#env_list', {
+        var pkg_list = new pkglist.PkgList('#pkg_list_body', {
             base_url: IPython.notebook_list.base_url,
+        });
+        var avail_list = new available.AvailList('#avail_list_body', {
+            base_url: IPython.notebook_list.base_url,
+            pkg_list: pkg_list
+        });
+        var env_list = new envlist.EnvList('#env_list_body', {
+            base_url: IPython.notebook_list.base_url,
+            pkg_list: pkg_list,
+            avail_list: avail_list
         });
         env_list.load_list();
-        var pkg_list = new pkglist.PkgList('#pkg_list', {
-            base_url: IPython.notebook_list.base_url,
-        });
+        avail_list.load_list();
     }
     return {
         load_ipython_extension: load
