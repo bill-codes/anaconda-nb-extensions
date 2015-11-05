@@ -68,7 +68,7 @@ define([
         this.selection = [];
 
         if(query === '') {
-            $('#avail_list_info').text(this.packages.length + ' packages available');
+            $('#avail_list_info').text(Object.keys(this.packages).length + ' packages available');
         }
         else {
             $('#avail_list_info').text(count + ' matching packages');
