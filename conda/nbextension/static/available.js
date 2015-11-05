@@ -29,7 +29,7 @@ define([
         // Set up event handlers for PkgList components
         var that = this;
         $('#refresh_avail_list').click($.proxy(this.load_list, this));
-        $('#search').click($.proxy(this.search, this));
+        $('#searchbox').keyup($.proxy(this.filter_list, this));
         $('#install').click($.proxy(this.install_packages, this));
     };
 
@@ -40,14 +40,39 @@ define([
 
 
     AvailList.prototype.load_list = function() {
-        // Load the package list via ajax to the /environments/ENV_NAME endpoint
+        // Load the package list via ajax to the /packages/search endpoint
         this.do_search('');
     };
 
 
-    AvailList.prototype.search = function() {
-        // Load the package list via ajax to the /environments/ENV_NAME endpoint
-        this.do_search($('#searchbox').val());
+    AvailList.prototype.filter_list = function() {
+        var that = this;
+        var query = $('#searchbox').val();
+        var count = 0;
+
+        this.element.children('.list_item').each(function(index, elem) {
+            elem = $(elem);
+            var d = elem.data('item').data;
+            var match = (d.name.indexOf(query) !== -1);
+            if(match) {
+                elem.show();
+                count++;
+            }
+            else {
+                elem.hide();
+                d.selected = false;
+                that.update_selection(d);
+            }
+        });
+
+        this.selection = [];
+
+        if(query === '') {
+            $('#avail_list_info').text(this.packages.length + ' packages available');
+        }
+        else {
+            $('#avail_list_info').text(count + ' matching packages');
+        }
     };
 
 
@@ -174,7 +199,7 @@ define([
 
         var name_col      = common.column('name', 5);
         var version_col   = common.column('version', 2).text(this.data.version);
-        var channel_col   = common.column('channel', 3).text(this.data.channel);
+        var channel_col   = common.column('channel', 5).text(this.data.channel);
 
         function select_click() {
             that.data.selected = ! that.data.selected;
