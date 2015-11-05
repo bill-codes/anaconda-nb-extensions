@@ -68,10 +68,11 @@ define([
         this.selection = [];
 
         if(query === '') {
-            $('#avail_list_info').text(Object.keys(this.packages).length + ' packages available');
+            count = Object.keys(this.packages).length;
+            $('#avail_list_info').text(common.pluralize(count, 'available package'));
         }
         else {
-            $('#avail_list_info').text(count + ' matching packages');
+            $('#avail_list_info').text(common.pluralize(count, 'matching package'));
         }
     };
 
@@ -131,13 +132,14 @@ define([
     AvailList.prototype.install_packages = function() {
         var that = this;
         var packages = this.selection;
+        var len = packages.length;
 
-        if(packages.length == 0) {
+        if(len == 0) {
             return;
         }
 
-        var msg = 'Are you sure you want to install ' + packages.length + ' packages in this environment?';
-        var error_callback = common.MakeErrorCallback('Error Installing Packages', 'An error occurred while installing packages.');
+        var msg = 'Are you sure you want to install ' + common.pluralize(len, 'package') + ' in this environment?';
+        var error_callback = common.MakeErrorCallback('Error Installing Packages', 'An error occurred during package installation.');
 
         function install_success() {
             that.pkg_list.load_list();
@@ -150,7 +152,7 @@ define([
                 Install: {
                     class: "btn-danger",
                     click: function() {
-                        that.action('install', packages, common.SuccessWrapper(install_success), error_callback);
+                        that.action('install', packages, common.SuccessWrapper(install_success, error_callback), error_callback);
                     }
                 },
                 Cancel: {}

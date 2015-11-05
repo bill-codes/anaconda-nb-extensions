@@ -72,7 +72,7 @@ define([
         }
         this.pkg_list.set_environment(this.default_env);
         this.avail_list.set_environment(this.default_env);
-        $('#env_list_info').text(len + ' Conda environments');
+        $('#env_list_info').text(common.pluralize(len, 'Conda environment'));
     };
 
 
@@ -198,8 +198,8 @@ define([
         var export_url = utils.url_join_encode(that.base_url, 'environments', that.data.name, 'export');
 
         var name_col      = common.column('name', 2).append(env_link);
-        var dir_col       = common.column('dir', 4).text(this.data.dir);
         var default_col   = common.column('default', 1).addClass('text-center');
+        var dir_col       = common.column('dir', 5).text(this.data.dir);
         var action_col    = common.column('action', 2);
 
         var export_button = common.link(export_url, common.button('Export', 'external-link'));

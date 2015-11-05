@@ -129,9 +129,10 @@ define([
         var that = this;
         var packages = this.selection;
         var msg;
+        var len = packages.length;
 
         if(packages.length != 0) {
-            msg = 'Are you sure you want to update ' + packages.length + ' packages in this environment?';
+            msg = 'Are you sure you want to update ' + common.pluralize(len, 'package') + ' in this environment?';
         }
         else {
             msg = 'Are you sure you want to update ALL packages in this environment?';

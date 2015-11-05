@@ -1,3 +1,17 @@
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
+if (!String.prototype.endsWith) {
+  String.prototype.endsWith = function(searchString, position) {
+      var subjectString = this.toString();
+      if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+        position = subjectString.length;
+      }
+      position -= searchString.length;
+      var lastIndex = subjectString.indexOf(searchString, position);
+      return lastIndex !== -1 && lastIndex === position;
+  };
+}
+
+
 define([
     'base/js/namespace',
     'jquery',
@@ -58,6 +72,33 @@ define([
         return $('<a href="' + url + '"/>').html(text);
     }
 
+    function pluralize(count_or_array, single_word, plural_word) {
+        var count = (count_or_array instanceof Array) ? count_or_array.length : count_or_array;
+        var plural = (count !== 1);
+        var word;
+
+        if(plural) {
+            if(plural_word) {
+                word = plural_word;
+            }
+            else {
+                if(single_word.endsWith('s') || single_word.endsWith('sh') || single_word.endsWith('ch')) {
+                    word = single_word + 'es';
+                }
+                else if(single_word.endsWith('y')) {
+                    word = single_word.slice(0, -1) + 'ies';
+                }
+                else {
+                    word = single_word + 's';
+                }
+            }
+        }
+        else {
+            word = single_word;
+        }
+        return count + ' ' + word;
+    }
+
     return {
         'MakeErrorCallback': MakeErrorCallback,
         'SuccessWrapper': SuccessWrapper,
@@ -65,5 +106,6 @@ define([
         'column': column,
         'button': button,
         'link': link,
+        'pluralize': pluralize
     };
 });

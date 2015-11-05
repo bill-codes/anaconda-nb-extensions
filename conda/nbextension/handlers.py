@@ -46,7 +46,7 @@ class EnvActionHandler(EnvHandler):
     def get(self, env, action):
         if action == 'export':
             # export environment file
-            self.set_header('Content-Disposition', 'attachment; filename="%s"' % (env + '.env'))
+            self.set_header('Content-Disposition', 'attachment; filename="%s"' % (env + '.txt'))
             self.finish(self.env_manager.export_env(env))
         else:
             raise web.HTTPError(400)
