@@ -42,7 +42,12 @@ class EnvManager(LoggingConfigurable):
             log.debug('exit code: %s', exc.returncode)
             output = exc.output
 
-        log.debug('output: %s', output)
+        MAX_LOG_OUTPUT = 6000
+        log.debug('output: %s', output[:MAX_LOG_OUTPUT])
+
+        if len(output) > MAX_LOG_OUTPUT:
+            log.debug('...')
+
         return output
 
     def list_envs(self):
