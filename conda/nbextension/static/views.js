@@ -20,8 +20,8 @@ define([
         bind: function() {
             var $root = $(this.selector);
 
-            $.each(this.bindings, function(index, binding) {
-                $root.find(binding.id).click(binding.click);
+            $.each(this.bindings, function(selector, callback) {
+                $root.find(selector).click(callback);
             });
         },
 
@@ -53,6 +53,14 @@ define([
                     var $cell = $('<div/>')
                         .addClass('col-xs-' + column.width);
 
+                    var xform = that.transforms[column.attr];
+                    if(xform) {
+                        $cell.append(xform(row));
+                    }
+                    else {
+                        // Default is to stuff text in the div
+                        $cell.text(row[column.attr]);
+                    }
 
                     // Create selection checkbox, if needed
                     if(that.selectable && index === 0) {
@@ -64,20 +72,10 @@ define([
                             .prependTo($cell);
                     }
 
-                    var xform = that.transforms[column.attr];
-
-                    if(xform) {
-                        $cell.append(xform(row));
-                    }
-                    else {
-                        // Default is to stuff text in the div
-                        $cell.text(row[column.attr]);
-                    }
-
                     $row.append($cell);
                 });
 
-                $body.append(row);
+                $body.append($row);
             });
         }
     }
@@ -100,7 +98,7 @@ define([
             name: function(row) {
                 return common.link('#', row.name)
                     .click(function() {
-                        models.environments.select(row.name)
+                        models.environments.select(row)
                     });
             },
 
@@ -110,7 +108,9 @@ define([
         },
 
         bindings: {
-            '#refresh_env_list': function() { models.environments.load(); }
+            '#refresh_env_list': function() {
+                models.environments.load();
+            }
         }
     });
 
@@ -119,6 +119,12 @@ define([
     $.extend(AvailView, {
         selector:   '#available_packages',
         label:      'available package',
+
+        columns:    [
+            { heading: 'Name',     attr: 'name',    width: 5 },
+            { heading: 'Version',  attr: 'version', width: 2 },
+            { heading: 'Channel',  attr: 'channel', width: 5 }
+        ],
 
         bind: function() {
             ListView.bind.call(this);
@@ -135,7 +141,7 @@ define([
             '#install': function() {
                 var msg = 'Are you sure you want to install ' +
                             common.pluralize(models.available.get_selection().length, 'package') +
-                            'into the environment "' + models.environments.selected.name + '" ?';
+                            ' into the environment "' + models.environments.selected.name + '" ?';
 
                 common.confirm('Install Packages', msg, 'Install', function() {
                     models.available.conda_install();
@@ -151,9 +157,10 @@ define([
         label:      'installed package',
 
         columns:    [
-            { heading: 'Name',     attr: 'name',    width: 5 },
-            { heading: 'Version',  attr: 'version', width: 2 },
-            { heading: 'Channel',  attr: 'build',   width: 5 },
+            { heading: 'Name',     attr: 'name',      width: 5 },
+            { heading: 'Version',  attr: 'version',   width: 2 },
+            { heading: 'Build',    attr: 'build',     width: 2 },
+            { heading: 'Avail',    attr: 'available', width: 3 }
         ]
     });
 

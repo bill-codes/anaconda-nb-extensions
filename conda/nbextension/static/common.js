@@ -83,6 +83,33 @@ define([
         });
     }
 
+    function pluralize(count_or_array, single_word, plural_word) {
+        var count = (count_or_array instanceof Array) ? count_or_array.length : count_or_array;
+        var plural = (count !== 1);
+        var word;
+
+        if(plural) {
+            if(plural_word) {
+                word = plural_word;
+            }
+            else {
+                if(single_word.endsWith('s') || single_word.endsWith('sh') || single_word.endsWith('ch')) {
+                    word = single_word + 'es';
+                }
+                else if(single_word.endsWith('y')) {
+                    word = single_word.slice(0, -1) + 'ies';
+                }
+                else {
+                    word = single_word + 's';
+                }
+            }
+        }
+        else {
+            word = single_word;
+        }
+        return count + ' ' + word;
+    }
+
     return {
         'MakeErrorCallback': MakeErrorCallback,
         'SuccessWrapper': SuccessWrapper,
@@ -91,6 +118,7 @@ define([
         'button': button,
         'link': link,
         'AjaxSettings': AjaxSettings,
-        'confirm': confirm
+        'confirm': confirm,
+        'pluralize': pluralize
     };
 });

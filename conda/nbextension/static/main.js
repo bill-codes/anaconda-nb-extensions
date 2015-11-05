@@ -6,7 +6,7 @@ define(function(require) {
 
     var env_html = $([
         '<div id="conda" class="tab-pane">',
-        '  <div id="#environments">',
+        '  <div id="environments">',
         '  <div id="env_toolbar" class="list_toolbar row">',
         '    <div class="col-xs-7 no-padding">',
         '      <span id="env_list_info" class="toolbar_info">Conda environments</span>',
@@ -29,7 +29,7 @@ define(function(require) {
         '  </div>',
         '  </div>',
 
-        '  <div id="#available_packages" class="half_width" style="float: left">',
+        '  <div id="available_packages" class="half_width" style="float: left">',
         '  <div id="avail_toolbar" class="list_toolbar row">',
         '    <div class="col-xs-6 no-padding">',
         '      <span id="avail_list_info" class="toolbar_info">Available packages</span>',
@@ -57,7 +57,7 @@ define(function(require) {
         '  </div>',
         '  </div>',
 
-        '  <div id="#installed_packages" class="half_width" style="float: right">',
+        '  <div id="installed_packages" class="half_width" style="float: right">',
         '  <div id="pkg_toolbar" class="list_toolbar row">',
         '    <div class="col-xs-8 no-padding">',
         '      <span id="pkg_list_info" class="toolbar_info">Installed Conda packages</span>',
@@ -120,6 +120,7 @@ define(function(require) {
         models.available.view = views.AvailView;
         models.installed.view = views.InstalledView;
         models.environments.load();
+        models.available.load();
     }
     return {
         load_ipython_extension: load

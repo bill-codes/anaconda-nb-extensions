@@ -24,16 +24,29 @@ define([
             var error_callback = common.MakeErrorCallback('Error', 'An error occurred while listing Conda environments.');
 
             function handle_response(envs, status, xhr) {
+                var keep_selection = false;
+                var default_env;
+
                 that.all = envs;
 
                 // Select the default environment as current
                 $.each(envs, function(index, env) {
                     if(env.is_default) {
-                        that.selected = env;
+                        default_env = env;
+                    }
+
+                    if(that.selected && that.selected.name == env.name) {
+                        // selected env still exists
+                        keep_selection = true;
                     }
                 });
 
                 that.view.refresh(envs);
+
+                if(! keep_selection) {
+                    // Lost selected env, pick a different one
+                    that.select(default_env);
+                }
             }
 
             var settings = common.AjaxSettings({
@@ -57,13 +70,13 @@ define([
         // Helper function to access the /environments/ENV/packages/ACTION endpoint
 
         var settings = common.AjaxSettings({
-            data:    packages,
+            data:    { packages: packages },
             type:    'POST',
             success: common.SuccessWrapper(on_success, on_error),
             error:   on_error
         });
 
-        var url = utils.url_join_encode(base_url, 'environments', environments.selected.name, action);
+        var url = utils.url_join_encode(base_url, 'environments', environments.selected.name, 'packages', action);
         $.ajax(url, settings);
     }
 
@@ -169,11 +182,13 @@ define([
             });
         },
 
-        conda_list: function(name) {
+        conda_list: function(query) {
             // Load the package list via ajax to the /packages/search endpoint
             var that = this;
 
             function handle_response(packages, status, xhr) {
+                var by_name = {};
+
                 $.each(packages, function(index, pkg) {
                     pkg.selected = false;
                     pkg.available = '';
