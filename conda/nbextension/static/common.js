@@ -58,6 +58,31 @@ define([
         return $('<a href="' + url + '"/>').html(text);
     }
 
+    function AjaxSettings(settings) {
+        settings.processData = false;
+        settings.cache = false;
+        settings.dataType = 'json';
+
+        if(! settings.type) {
+            settings.type = 'GET';
+        }
+        return settings;
+    }
+
+    function confirm(title, msg, button_text, callback) {
+        var buttons = { Cancel: {} };
+        buttons[button_text] = {
+            class: 'btn-danger',
+            click: callback
+        }
+
+        dialog.modal({
+            title: title,
+            body: msg,
+            buttons: buttons
+        });
+    }
+
     return {
         'MakeErrorCallback': MakeErrorCallback,
         'SuccessWrapper': SuccessWrapper,
@@ -65,5 +90,7 @@ define([
         'column': column,
         'button': button,
         'link': link,
+        'AjaxSettings': AjaxSettings,
+        'confirm': confirm
     };
 });

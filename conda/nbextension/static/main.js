@@ -1,12 +1,12 @@
 define(function(require) {
     var $ = require('jquery');
     var IPython = require('base/js/namespace');
-    var envlist = require('./envlist');
-    var pkglist = require('./pkglist');
-    var available = require('./available');
+    var models = require('./models');
+    var views = require('./views');
 
     var env_html = $([
         '<div id="conda" class="tab-pane">',
+        '  <div id="#environments">',
         '  <div id="env_toolbar" class="list_toolbar row">',
         '    <div class="col-xs-7 no-padding">',
         '      <span id="env_list_info" class="toolbar_info">Conda environments</span>',
@@ -24,11 +24,12 @@ define(function(require) {
         '      <div class="dir_col     col-xs-4">Directory</div>',
         '      <div class="action_col  col-xs-2">Action</div>',
         '    </div>',
-        '    <div id="env_list_body" class="scrollable">',
+        '    <div id="env_list_body" class="list_body scrollable">',
         '    </div>',
         '  </div>',
+        '  </div>',
 
-        '  <div class="half_width" style="float: left">',
+        '  <div id="#available_packages" class="half_width" style="float: left">',
         '  <div id="avail_toolbar" class="list_toolbar row">',
         '    <div class="col-xs-6 no-padding">',
         '      <span id="avail_list_info" class="toolbar_info">Available packages</span>',
@@ -51,12 +52,12 @@ define(function(require) {
         '      <div class="version_col  col-xs-2">Version</div>',
         '      <div class="channel_col  col-xs-5">Channel</div>',
         '    </div>',
-        '    <div id="avail_list_body" class="scrollable">',
+        '    <div id="avail_list_body" class="list_body scrollable">',
         '    </div>',
         '  </div>',
         '  </div>',
 
-        '  <div class="half_width" style="float: right">',
+        '  <div id="#installed_packages" class="half_width" style="float: right">',
         '  <div id="pkg_toolbar" class="list_toolbar row">',
         '    <div class="col-xs-8 no-padding">',
         '      <span id="pkg_list_info" class="toolbar_info">Installed Conda packages</span>',
@@ -77,7 +78,7 @@ define(function(require) {
         '      <div class="build_col    col-xs-2">Build</div>',
         '      <div class="avail_col    col-xs-3">Available</div>',
         '    </div>',
-        '    <div id="pkg_list_body" class="scrollable">',
+        '    <div id="pkg_list_body" class="list_body scrollable">',
         '    </div>',
         '  </div>',
         '  </div>',
@@ -109,20 +110,16 @@ define(function(require) {
                 })
             )
         );
-        var pkg_list = new pkglist.PkgList('#pkg_list_body', {
-            base_url: IPython.notebook_list.base_url,
-        });
-        var avail_list = new available.AvailList('#avail_list_body', {
-            base_url: IPython.notebook_list.base_url,
-            pkg_list: pkg_list
-        });
-        var env_list = new envlist.EnvList('#env_list_body', {
-            base_url: IPython.notebook_list.base_url,
-            pkg_list: pkg_list,
-            avail_list: avail_list
-        });
-        env_list.load_list();
-        avail_list.load_list();
+
+        models.base_url = IPython.notebook_list.base_url;
+        views.EnvView.bind();
+        views.AvailView.bind();
+        views.InstalledView.bind();
+
+        models.environments.view = views.EnvView;
+        models.available.view = views.AvailView;
+        models.installed.view = views.InstalledView;
+        models.environments.load();
     }
     return {
         load_ipython_extension: load
