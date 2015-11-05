@@ -59,7 +59,6 @@ define([
     }
 
     function AjaxSettings(settings) {
-        settings.processData = false;
         settings.cache = false;
         settings.dataType = 'json';
 

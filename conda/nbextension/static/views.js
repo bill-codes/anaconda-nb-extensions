@@ -25,12 +25,15 @@ define([
             });
         },
 
+        update_label: function(count) {
+            $(this.selector).find('.toolbar_info').text(common.pluralize(count, this.label));
+        },
+
         refresh: function(data) {
             var that = this;
-            var len = data.length;
             var $root = $(this.selector);
 
-            $root.find('.toolbar_info').text(common.pluralize(len, this.label));
+            this.update_label(data.length);
             var $header = $root.find('.list_header');
             $header.empty();
 
@@ -47,7 +50,8 @@ define([
             $.each(data, function(index, row) {
                 var $row = $('<div/>')
                     .addClass('list_item')
-                    .addClass('row');
+                    .addClass('row')
+                    .data('data', row);
 
                 $.each(that.columns, function(index, column) {
                     var $cell = $('<div/>')
@@ -128,10 +132,12 @@ define([
 
         bind: function() {
             ListView.bind.call(this);
+
+            var that = this;
             var $box = $('#searchbox');
 
             $box.keyup(function() {
-                models.available.filter($box.val());
+                that.filter($box.val());
             });
         },
 
@@ -147,6 +153,24 @@ define([
                     models.available.conda_install();
                 });
             }
+        },
+
+        filter: function(query) {
+            var count = 0;
+
+            $(this.selector).find('.list_item').each(function(index, elem) {
+                var $elem = $(elem);
+
+                if($elem.data('data').name.indexOf(query) === -1) {
+                    $elem.hide();
+                }
+                else {
+                    $elem.show();
+                    count++;
+                }
+            });
+
+            this.update_label(count);
         }
     });
 
@@ -157,11 +181,39 @@ define([
         label:      'installed package',
 
         columns:    [
-            { heading: 'Name',     attr: 'name',      width: 5 },
-            { heading: 'Version',  attr: 'version',   width: 2 },
-            { heading: 'Build',    attr: 'build',     width: 2 },
-            { heading: 'Avail',    attr: 'available', width: 3 }
-        ]
+            { heading: 'Name',      attr: 'name',      width: 5 },
+            { heading: 'Version',   attr: 'version',   width: 2 },
+            { heading: 'Build',     attr: 'build',     width: 2 },
+            { heading: 'Available', attr: 'available', width: 3 }
+        ],
+
+        bindings: {
+            '#refresh_pkg_list': function() { models.installed.load(); },
+
+            '#check_update': function() {
+                models.installed.conda_check_updates();
+            },
+
+            '#update_pkgs': function() {
+                var msg = 'Are you sure you want to update ' +
+                            common.pluralize(models.installed.get_selection().length, 'package') +
+                            ' in the environment "' + models.environments.selected.name + '" ?';
+
+                common.confirm('Update Packages', msg, 'Update', function() {
+                    models.installed.conda_update();
+                });
+            },
+
+            '#remove_pkgs': function() {
+                var msg = 'Are you sure you want to remove ' +
+                            common.pluralize(models.installed.get_selection().length, 'package') +
+                            ' from the environment "' + models.environments.selected.name + '" ?';
+
+                common.confirm('Remove Packages', msg, 'Remove', function() {
+                    models.installed.conda_remove();
+                });
+            }
+        },
     });
 
     return {

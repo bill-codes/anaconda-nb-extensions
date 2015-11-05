@@ -125,15 +125,6 @@ define([
             $.ajax(url, settings);
         },
 
-        filter: function(query) {
-            // Filter the list, without querying the server.
-
-            var filtered = this.packages.filter(function(pkg) {
-                return (pkg.name.indexOf(query) !== -1);
-            });
-            this.view.refresh(filtered);
-        },
-
         conda_install: function() {
             var that = this;
             var packages = this.get_selected_names();
@@ -241,20 +232,19 @@ define([
         conda_check_updates: function() {
             var that = this;
 
-            function handle_response(packages, status, xhr) {
-                $.each(packages, function(index, pkg) {
+            function handle_response(updates, status, xhr) {
+                $.each(updates, function(index, pkg) {
                     var existing = that.by_name[pkg.name];
 
                     // See if there is an existing entry.
                     // Usually there will be, but an update
                     // might pull in a new package as a dependency.
                     if(existing) {
-                        existing.available = d.version + '-' + d.build;
+                        existing.available = pkg.version + '-' + pkg.build;
                     }
                 });
 
-                that.packages = packages;
-                that.view.refresh(packages);
+                that.view.refresh(that.packages);
             }
 
             this._update(true, handle_response);
