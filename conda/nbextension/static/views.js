@@ -169,6 +169,13 @@ define([
             });
         },
 
+        refresh: function(data) {
+            ListView.refresh.call(this, data);
+
+            var $box = $('#searchbox');
+            this.filter($box.val());
+        },
+
         bindings: {
             '#refresh_avail_list': function() { models.available.load(); },
 

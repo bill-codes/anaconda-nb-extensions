@@ -129,6 +129,12 @@ define([
             });
         },
 
+        select_none: function() {
+            $.each(this.packages, function(index, pkg) {
+                pkg.selected = false;
+            });
+        },
+
         get_selected_names: function() {
             return this.get_selection().map(function(pkg) {
                 return pkg.name;
@@ -172,6 +178,8 @@ define([
             function install_success() {
                 // Refresh list of packages installed in the current environment
                 installed.load();
+                that.select_none();
+                that.view.refresh(that.packages);
             }
             conda_package_action(packages, 'install', install_success, error_callback);
         }
