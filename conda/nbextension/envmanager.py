@@ -123,6 +123,7 @@ class EnvManager(LoggingConfigurable):
         return json.loads(output)
 
     def package_search(self, q):
+        # this method is slow and operates synchronously
         output = self._execute('conda search --json', q)
         data = json.loads(output)
 
@@ -145,4 +146,3 @@ class EnvManager(LoggingConfigurable):
 
             packages.append(max_version_entry)
         return sorted(packages, key=lambda entry:entry.get('name'))
-
