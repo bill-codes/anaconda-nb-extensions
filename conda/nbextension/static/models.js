@@ -63,6 +63,26 @@ define([
 
             // refresh list of packages installed in the selected environment
             installed.load();
+        },
+
+        clone: function(env, new_name) {
+            var error_callback = common.MakeErrorCallback('Error Cloning Environment', 'An error occurred while cloning "' + env.name + '"');
+
+            function clone_success() {
+                // Refresh list of environments since there is a new one
+                environments.load();
+            }
+            conda_env_action(env, 'clone', clone_success, error_callback, { name: new_name });
+        },
+
+        remove: function(env) {
+            var error_callback = common.MakeErrorCallback('Error Removing Environment', 'An error occurred while removing "' + env.name + '"');
+
+            function remove_success() {
+                // Refresh list of environments since there is a new one
+                environments.load();
+            }
+            conda_env_action(env, 'delete', remove_success, error_callback);
         }
     };
 
@@ -77,6 +97,20 @@ define([
         });
 
         var url = utils.url_join_encode(base_url, 'environments', environments.selected.name, 'packages', action);
+        $.ajax(url, settings);
+    }
+
+    function conda_env_action(env, action, on_success, on_error, data) {
+        // Helper function to access the /environments/ENV/ACTION endpoint
+
+        var settings = common.AjaxSettings({
+            data:    data || {},
+            type:    'POST',
+            success: common.SuccessWrapper(on_success, on_error),
+            error:   on_error
+        });
+
+        var url = utils.url_join_encode(base_url, 'environments', env.name, action);
         $.ajax(url, settings);
     }
 

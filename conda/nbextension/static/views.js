@@ -17,6 +17,11 @@ define([
         transforms: {},
         bindings:   {},
 
+        init: function() {
+            this.create_header();
+            this.bind();
+        },
+
         bind: function() {
             var $root = $(this.selector);
 
@@ -29,12 +34,8 @@ define([
             $(this.selector).find('.toolbar_info').text(common.pluralize(count, this.label));
         },
 
-        refresh: function(data) {
-            var that = this;
-            var $root = $(this.selector);
-
-            this.update_label(data.length);
-            var $header = $root.find('.list_header');
+        create_header: function(count) {
+            var $header = $(this.selector).find('.list_header');
             $header.empty();
 
             $.each(this.columns, function(index, column) {
@@ -43,7 +44,13 @@ define([
                     .text(column.heading)
                     .appendTo($header);
             });
+        },
 
+        refresh: function(data) {
+            var that = this;
+            var $root = $(this.selector);
+
+            this.update_label(data.length);
             var $body = $root.find('.list_body');
             $body.empty();
 
@@ -92,10 +99,10 @@ define([
         selectable: false,
         model:      models.environments,
         columns:    [
-            { heading: 'Name', attr: 'name', width: 2 },
-            { heading: 'Default?', attr: 'is_default', width: 1 },
-            { heading: 'Directory', attr: 'dir', width: 4 }
-            //,{ heading: 'Action', attr: 'name', width: 2 },
+            { heading: 'Name',      attr: 'name',       width: 3 },
+            { heading: 'Default?',  attr: 'is_default', width: 1 },
+            { heading: 'Directory', attr: 'dir',        width: 6 },
+            { heading: 'Action',    attr: '_action',    width: 2 },
         ],
 
         transforms: {
@@ -108,6 +115,27 @@ define([
 
             is_default: function(row) {
                 return common.icon(row.is_default ? 'check' : '');
+            },
+
+            _action: function(row) {
+                // This is a pseudo-attribute
+                // TODO: the view should not know about this URL, need a model method
+                var export_url = utils.url_join_encode(models.base_url, 'environments', row.name, 'export');
+
+                return $('<span/>')
+                    .addClass('btn-group')
+                    .append(common.button('Delete', 'trash-o').click(function () {
+                        var msg = 'Are you sure you want to permanently delete "' + row.name + '" ?';
+                        common.confirm('Delete Environment', msg, 'Delete', function() {
+                            models.environments.remove(row);
+                        });
+                    }))
+                    .append(common.button('Clone', 'copy').click(function () {
+                        common.prompt('Clone Environment', 'Create a copy of "' + row.name + '"', 'New name:', 'Clone', function(new_name) {
+                            models.environments.clone(row, new_name);
+                        });
+                    }))
+                    .append(common.link(export_url, common.button('Export', 'external-link')));
             }
         },
 
@@ -186,6 +214,13 @@ define([
             { heading: 'Build',     attr: 'build',     width: 2 },
             { heading: 'Available', attr: 'available', width: 3 }
         ],
+
+        update_label: function(count) {
+            $(this.selector)
+                .find('.toolbar_info')
+                .text(common.pluralize(count, this.label) +
+                    ' in environment "' + models.environments.selected.name + '"');
+        },
 
         bindings: {
             '#refresh_pkg_list': function() { models.installed.load(); },

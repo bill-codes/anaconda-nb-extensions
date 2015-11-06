@@ -28,3 +28,8 @@ input.small-input {
     padding: 2px 6px 0px 6px;
     font-size: 10px;
 }
+
+#environments {
+    width: 98%;
+    margin: 1%;
+}
