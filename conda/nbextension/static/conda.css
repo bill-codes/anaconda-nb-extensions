@@ -8,12 +8,12 @@
 
 div.scrollable {
     overflow-y: auto;
-    height: 200px;
+    height: 180px;
 }
 
 div.big_scrollable {
     overflow-y: auto;
-    height: 300px;
+    height: 280px;
 }
 
 div.half_width {
