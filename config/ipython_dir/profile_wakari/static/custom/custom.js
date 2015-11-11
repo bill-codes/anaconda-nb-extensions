@@ -10,7 +10,7 @@ define(["base/js/utils", "base/js/events"], function (utils, events) {
     events.on("app_initialized.NotebookApp", function () {
       utils.load_extensions('defaulter/main');
     });
-    events.on("kernel_ready.Kernel", function () {
+    events.one("kernel_ready.Kernel", function () {
       utils.load_extensions('syncer/main');
       utils.load_extensions('locker/main');
       utils.load_extensions('rcm/main');

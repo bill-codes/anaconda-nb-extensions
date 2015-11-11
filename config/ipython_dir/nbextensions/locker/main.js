@@ -22,6 +22,7 @@ define (['nbextensions/utils/main'], function(utils){
   var getpath = utils.getpath;
   var getuser = utils.getuser;
   var execute = utils.execute;
+  var old_save = IPython.notebook.save_notebook.bind(IPython.notebook);
 
   /**
    * Write a hidden lock file in the same path where the notebook lives.
@@ -160,7 +161,7 @@ define (['nbextensions/utils/main'], function(utils){
       // deleted our save function
       delete(IPython.notebook.save_notebook);
       // actually trigger the real save
-      IPython.notebook.save_notebook();
+      old_save();
       // enable our save function for the next time
       lockTriggerSave();
       // disable the blue background only if the state is "open" or "another"
@@ -187,7 +188,7 @@ define (['nbextensions/utils/main'], function(utils){
    * nobody has the lock.
    */
   function lockTriggerSave() {
-    IPython.notebook.save_notebook = (function() {
+    Object.getPrototypeOf(IPython.notebook).save_notebook = (function() {
 
       return function() {
         lockReader(lockSave);

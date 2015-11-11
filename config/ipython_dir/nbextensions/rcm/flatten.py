@@ -1,23 +1,21 @@
-from nbformat.v4 import reads
+from nbformat.v4 import reads_json
 from IPython.utils.text import strip_ansi
 
 
 def flatten(ipynb):
-    nb = reads(ipynb, "ipynb")
+    nb = reads_json(ipynb)
     content = []
     index = []
-    for cell in nb.worksheets[0].cells:
+    for cell in nb.cells:
         try:
-            n = cell.prompt_number
+            n = cell.execution_count
         except AttributeError:
             n = "-"
+        if n is None:
+            n = "@"
         index.append("***in " + str(n))
         content.append("***in")
-        if cell.cell_type == 'code':
-            source = cell.input
-        else:
-            source = cell.source
-        content.append(source)
+        content.append(cell.source)
 
         if cell.cell_type == 'code':
             if cell.outputs:
@@ -34,9 +32,9 @@ def flatten(ipynb):
 
 
 def prepare(raw_diff):
-    pos_diff = [i[1:] for i in raw_diff[5:-1] if not i.startswith("-")]
+    pos_diff = [i[1:] for i in raw_diff[5:] if not i.startswith("-")]
     pos_flat, i_p = flatten("".join(pos_diff))
-    neg_diff = [i[1:] for i in raw_diff[5:-1] if not i.startswith("+")]
+    neg_diff = [i[1:] for i in raw_diff[5:] if not i.startswith("+")]
     neg_flat, i_n = flatten("".join(neg_diff))
 
     return pos_flat, i_p, neg_flat, i_n
@@ -70,7 +68,7 @@ def diff(raw_diff):
         if line.startswith(in_out):
             d[i] = _i[j]
             j += 1
-    str_d = "\n".join(d)
+    str_d = str("\n".join(d))
 
     return str_d
 

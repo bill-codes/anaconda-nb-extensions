@@ -9,6 +9,8 @@ requirements:
   run:
     - python
     - notebook ==4.0.4
+    - ipywidgets
+    - ipyparallel
     - pandoc
     - jsonpointer
 
