@@ -98,8 +98,17 @@ if not exists(jupyter_data_dir):
 os.environ['JUPYTER_CONFIG_DIR'] = jupyter_config_dir
 os.environ['JUPYTER_DATA_DIR'] = jupyter_data_dir
 
-template_dir = join(dirname(dirname(__file__)), 'config', 'ipython_dir')
+# Look for files copied from source (by the recipe) into the environment
+source_config_dir = join(dirname(dirname(__file__)), 
+                        'etc',
+                        'anaconda_notebook',
+                        'jupyter_config_dir')
+source_data_dir = join(dirname(dirname(__file__)),
+                      'share',
+                      'anaconda_notebook',
+                      'jupyter_data_dir')
 
+# Our own copytree...
 def copytree(src, dst, is_file=False):
     if not is_file:
         if exists(dst):
@@ -110,28 +119,32 @@ def copytree(src, dst, is_file=False):
             os.remove(dst)
         return shutil.copyfile(src, dst)
 
-copytree(join(template_dir, 'nbextensions', 'defaulter'),
-                join(jupyter_data_dir, 'nbextensions', 'defaulter'))
-copytree(join(template_dir, 'nbextensions', 'syncer'),
-                join(jupyter_data_dir, 'nbextensions', 'syncer'))
-copytree(join(template_dir, 'nbextensions', 'locker'),
-                join(jupyter_data_dir, 'nbextensions', 'locker'))
-copytree(join(template_dir, 'nbextensions', 'utils'),
-                join(jupyter_data_dir, 'nbextensions', 'utils'))
-copytree(join(template_dir, 'nbextensions', 'rcm'),
-                join(jupyter_data_dir, 'nbextensions', 'rcm'))
-copytree(join(template_dir, 'profile_wakari', 'static', 'custom', 'custom.js'),
+# Copy jupyter config files
+copytree(join(source_config_dir, 'custom', 'custom.js'),
          join(jupyter_config_dir, 'custom', 'custom.js'),
          is_file=True
 )
-copytree(join(template_dir, 'profile_wakari', 'ipython_notebook_config.py'),
+copytree(join(source_config_dir, 'jupyter_notebook_config.py'),
          join(jupyter_config_dir, 'jupyter_notebook_config.py'),
          is_file=True
 )
-copytree(join(template_dir, 'profile_wakari', 'ipython_kernel_config.py'),
+copytree(join(source_config_dir, 'jupyter_kernel_config.py'),
          join(jupyter_config_dir, 'jupyter_kernel_config.py'),
          is_file=True
 )
+
+# Copy jupyter data files
+copytree(join(source_data_dir, 'nbextensions', 'defaulter'),
+         join(jupyter_data_dir, 'nbextensions', 'defaulter'))
+copytree(join(source_data_dir, 'nbextensions', 'syncer'),
+         join(jupyter_data_dir, 'nbextensions', 'syncer'))
+copytree(join(source_data_dir, 'nbextensions', 'locker'),
+         join(jupyter_data_dir, 'nbextensions', 'locker'))
+copytree(join(source_data_dir, 'nbextensions', 'utils'),
+         join(jupyter_data_dir, 'nbextensions', 'utils'))
+copytree(join(source_data_dir, 'nbextensions', 'rcm'),
+         join(jupyter_data_dir, 'nbextensions', 'rcm'))
+
 ## run the syncer
 cmd = [sys.executable,
        join(jupyter_data_dir, 'nbextensions', 'syncer', 'sync.py'),
