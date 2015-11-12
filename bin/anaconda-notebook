@@ -8,75 +8,70 @@ import tempfile
 
 from os.path import join, exists, dirname
 
-import IPython
-import IPython.utils.io
-import IPython.utils.path
-
 from jupyter_core import paths
 from notebook.notebookapp import NotebookApp
 
 import logging
 logger = logging.getLogger(__name__)
 
-# WAKARI-specific
-wakari_flag = os.environ.get('WAKARI_PROJECT_HOME')
+# WAKARI-specificity
+wk_project_home = os.environ.get('WAKARI_PROJECT_HOME')
 
-# WAKARI-specific
-# CHECK: Recently this function was refactored in the notebook, we should check
-# if this is still valid as is...
-def _copy_metadata(src, dst):
-    """IPython uses this to copy metadata (perms) from
-    src to dst.  However when new notebooks are created,
-    dst does not exist.  When new notebooks are created
-    usually this function fails, and src is renamed to
-    dst. So what we do is make a tempfile, which will
-    have the inherited ACLs, and then copy those to
-    both the source and the dst.
-    """
-    base = dirname(dst)
-    path = tempfile.NamedTemporaryFile(dir=base).name
-    try:
-        with open(path, "w+") as f:
-            try:
-                shutil.copymode(path, src)
-            except:
-                pass
-            try:
-                shutil.copymode(path, dst)
-            except:
-                pass
-        st = os.stat(src)
-        if hasattr(os, 'chflags') and hasattr(st, 'st_flags'):
-            os.chflags(dst, st.st_flags)
-    finally:
-        os.remove(path)
+if wk_project_home:
+    import IPython
 
-if wakari_flag:
+    # CHECK: Recently this function was refactored in the notebook, we should check
+    # if this is still valid as is...
+    def _copy_metadata(src, dst):
+        """IPython uses this to copy metadata (perms) from
+        src to dst.  However when new notebooks are created,
+        dst does not exist.  When new notebooks are created
+        usually this function fails, and src is renamed to
+        dst. So what we do is make a tempfile, which will
+        have the inherited ACLs, and then copy those to
+        both the source and the dst.
+        """
+        base = dirname(dst)
+        path = tempfile.NamedTemporaryFile(dir=base).name
+        try:
+            with open(path, "w+") as f:
+                try:
+                    shutil.copymode(path, src)
+                except:
+                    pass
+                try:
+                    shutil.copymode(path, dst)
+                except:
+                    pass
+            st = os.stat(src)
+            if hasattr(os, 'chflags') and hasattr(st, 'st_flags'):
+                os.chflags(dst, st.st_flags)
+        finally:
+            os.remove(path)
+
+
     IPython.utils.io._copy_metadata = _copy_metadata
 
-# WAKARI-specific
-# CHECK: We should check if this is still valid as the notebook
-old_ensure_dir_exists = IPython.utils.path.ensure_dir_exists
+    # CHECK: We should check if this is still valid as the notebook
+    old_ensure_dir_exists = IPython.utils.path.ensure_dir_exists
 
-def ensure_dir_exists(path, mode=None):
-    if mode:
-        logger.error("we don't allow you to pass a mode for ensure_dir_exists, as it conflicts with ACLs")
-    return old_ensure_dir_exists(path, mode=0o777)
+    def ensure_dir_exists(path, mode=None):
+        if mode:
+            logger.error("we don't allow you to pass a mode for ensure_dir_exists, as it conflicts with ACLs")
+        return old_ensure_dir_exists(path, mode=0o777)
 
-if wakari_flag:
     IPython.utils.path.ensure_dir_exists = ensure_dir_exists
 
-# Setup jupyter_config_dir and jupyter_data_dir
-if wakari_flag:
-    base_dir = wakari_flag # 'WAKARI_PROJECT_HOME'
+    # Setup jupyter_config_dir and jupyter_data_dir into ipython_<user>
     # Wakari run on linux boxes so it is safe to look for this locations
-    jupyter_config_dir = join(base_dir, '.jupyter_%s' % getpass.getuser())
-    jupyter_data_dir = join(base_dir, '.local', 'share',  'jupyter_%s' % getpass.getuser())
+    jupyter_config_dir = join(wk_project_home , '.jupyter_%s' % getpass.getuser())
+    jupyter_data_dir = join(wk_project_home , '.local', 'share',  'jupyter_%s' % getpass.getuser())
 else:
-    # Install extensions on the environment
+    # Setup jupyter_config_dir and jupyter_data_dir into the environment
     jupyter_config_dir = paths.ENV_CONFIG_PATH[0]
     jupyter_data_dir = paths.ENV_JUPYTER_PATH[0]
 
+# Make sure the locations exists
 if not exists(jupyter_config_dir):
     os.makedirs(jupyter_config_dir)
 if not exists(join(jupyter_config_dir, 'custom')):
