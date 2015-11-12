@@ -8,7 +8,11 @@ and improve the communication with Anaconda Cloud, conda and other Continuum pac
 
 To manually build the package, you should run:
 
-`conda build -c wakari conda.recipe`
+`conda build conda.recipe`
 
-Note: thw `wakari` channel is needed here to build with the jsonpointer dependency
-which is the run dependency for the anaconda-notebook.
+To install it:
+
+conda install -c wakari --use-local anaconda-notebook
+
+Note: the `wakari` channel is needed here to install the jsonpointer and pandoc
+which are run dependencies for the anaconda-notebook.
