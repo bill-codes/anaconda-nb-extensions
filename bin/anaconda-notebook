@@ -147,4 +147,4 @@ if len(args) == 1:
 else:
     args = args[1:]
 
-NotebookApp.launch_instance(argv)
+NotebookApp.launch_instance(argv=args)
