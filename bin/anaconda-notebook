@@ -1,25 +1,34 @@
 #!/usr/bin/env python
-import sys
+import getpass
 import os
-from os.path import join, exists, dirname
-import tempfile
 import shutil
 import subprocess
-import getpass
+import sys
+import tempfile
+
+from os.path import join, exists, dirname
 
 import IPython
 import IPython.utils.io
 import IPython.utils.path
+
+from jupyter_core import paths
+
 import logging
 logger = logging.getLogger(__name__)
 
-## monkey patch IPython until they fix ACLs
+# WAKARI-specific
+wakari_flag = os.environ.get('WAKARI_PROJECT_HOME')
+
+# WAKARI-specific
+# CHECK: Recently this function was refactored in the notebook, we should check
+# if this is still valid as is...
 def _copy_metadata(src, dst):
-    """Ipython uses this to copy metadata (perms) from
+    """IPython uses this to copy metadata (perms) from
     src to dst.  However when new notebooks are created,
     dst does not exist.  When new notebooks are created
     usually this function fails, and src is renamed to
-    dst.  So what we do is make a tempfile, which will
+    dst. So what we do is make a tempfile, which will
     have the inherited ACLs, and then copy those to
     both the source and the dst.
     """
@@ -41,31 +50,42 @@ def _copy_metadata(src, dst):
     finally:
         os.remove(path)
 
-IPython.utils.io._copy_metadata = _copy_metadata
+if wakari_flag:
+    IPython.utils.io._copy_metadata = _copy_metadata
 
+# WAKARI-specific
+# CHECK: We should check if this is still valid as the notebook
 old_ensure_dir_exists = IPython.utils.path.ensure_dir_exists
 
 def ensure_dir_exists(path, mode=None):
     if mode:
         logger.error("we don't allow you to pass a mode for ensure_dir_exists, as it conflicts with ACLs")
     return old_ensure_dir_exists(path, mode=0o777)
-IPython.utils.path.ensure_dir_exists = ensure_dir_exists
 
+if wakari_flag:
+    IPython.utils.path.ensure_dir_exists = ensure_dir_exists
+
+# Let's start
 args = sys.argv
+
+# we pass "notebook" as first argument, so you can trigger the notebook just
+# with "anaconda-notebook"
 if len(args) == 1:
     args = ["notebook"]
 else:
     args = ["notebook"] + args[1:]
 
-#setup jupyter_config_dir
-base_dir = os.environ.get('WAKARI_PROJECT_HOME')
-if base_dir:
+# Setup jupyter_config_dir
+
+if wakari_flag:
+    base_dir = wakari_flag # 'WAKARI_PROJECT_HOME'
+    # Wakari run on linux boxes so it is safe to look for this locations
     jupyter_config_dir = join(base_dir, '.jupyter_%s' % getpass.getuser())
     jupyter_data_dir = join(base_dir, '.local', 'share',  'jupyter_%s' % getpass.getuser())
 else:
-    base_dir = os.environ.get('HOME')
-    jupyter_config_dir = join(base_dir, '.jupyter')
-    jupyter_data_dir = join(base_dir, '.local', 'share', 'jupyter')
+    # Install extensions on the environment
+    jupyter_config_dir = paths.ENV_CONFIG_PATH[0]
+    jupyter_data_dir = paths.ENV_JUPYTER_PATH[0]
 
 if not exists(jupyter_config_dir):
     os.makedirs(jupyter_config_dir)
@@ -74,6 +94,7 @@ if not exists(join(jupyter_config_dir, 'custom')):
 if not exists(jupyter_data_dir):
     os.makedirs(jupyter_data_dir)
 
+# Keep open the posibilty to point to other config locations
 os.environ['JUPYTER_CONFIG_DIR'] = jupyter_config_dir
 os.environ['JUPYTER_DATA_DIR'] = jupyter_data_dir
 
