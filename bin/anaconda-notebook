@@ -120,30 +120,31 @@ def copytree(src, dst, is_file=False):
         return shutil.copyfile(src, dst)
 
 # Copy jupyter config files
+
+#TODO: use config manager to load the extension...
 copytree(join(source_config_dir, 'custom', 'custom.js'),
          join(jupyter_config_dir, 'custom', 'custom.js'),
          is_file=True
 )
-copytree(join(source_config_dir, 'jupyter_notebook_config.py'),
-         join(jupyter_config_dir, 'jupyter_notebook_config.py'),
-         is_file=True
-)
-copytree(join(source_config_dir, 'jupyter_kernel_config.py'),
-         join(jupyter_config_dir, 'jupyter_kernel_config.py'),
-         is_file=True
-)
+
+config_files = ['jupyter_notebook_config.py']
+
+for config_file in config_files:
+    copytree(join(source_config_dir, config_file),
+             join(jupyter_config_dir, config_file),
+             is_file=True
+    )
 
 # Copy jupyter data files
-copytree(join(source_data_dir, 'nbextensions', 'defaulter'),
-         join(jupyter_data_dir, 'nbextensions', 'defaulter'))
-copytree(join(source_data_dir, 'nbextensions', 'syncer'),
-         join(jupyter_data_dir, 'nbextensions', 'syncer'))
-copytree(join(source_data_dir, 'nbextensions', 'locker'),
-         join(jupyter_data_dir, 'nbextensions', 'locker'))
-copytree(join(source_data_dir, 'nbextensions', 'utils'),
-         join(jupyter_data_dir, 'nbextensions', 'utils'))
-copytree(join(source_data_dir, 'nbextensions', 'rcm'),
-         join(jupyter_data_dir, 'nbextensions', 'rcm'))
+nbextensions = ['defaulter',
+                'locker',
+                'rcm',
+                'syncer',
+                'utils']
+
+for nbextension in nbextensions:
+    copytree(join(source_data_dir, 'nbextensions', nbextension),
+             join(jupyter_data_dir, 'nbextensions', nbextension))
 
 ## run the syncer
 cmd = [sys.executable,
