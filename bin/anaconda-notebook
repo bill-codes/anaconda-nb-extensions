@@ -13,6 +13,7 @@ import IPython.utils.io
 import IPython.utils.path
 
 from jupyter_core import paths
+from notebook.notebookapp import NotebookApp
 
 import logging
 logger = logging.getLogger(__name__)
@@ -65,18 +66,7 @@ def ensure_dir_exists(path, mode=None):
 if wakari_flag:
     IPython.utils.path.ensure_dir_exists = ensure_dir_exists
 
-# Let's start
-args = sys.argv
-
-# we pass "notebook" as first argument, so you can trigger the notebook just
-# with "anaconda-notebook"
-if len(args) == 1:
-    args = ["notebook"]
-else:
-    args = ["notebook"] + args[1:]
-
-# Setup jupyter_config_dir
-
+# Setup jupyter_config_dir and jupyter_data_dir
 if wakari_flag:
     base_dir = wakari_flag # 'WAKARI_PROJECT_HOME'
     # Wakari run on linux boxes so it is safe to look for this locations
@@ -146,10 +136,20 @@ for nbextension in nbextensions:
     copytree(join(source_data_dir, 'nbextensions', nbextension),
              join(jupyter_data_dir, 'nbextensions', nbextension))
 
-## run the syncer
+# Run the syncer
 cmd = [sys.executable,
        join(jupyter_data_dir, 'nbextensions', 'syncer', 'sync.py'),
        '-p',
        join(jupyter_data_dir, 'kernels')]
+
 subprocess.check_call(cmd)
-IPython.start_ipython(argv=args)
+
+# Launch the notebook instance with the proper args
+args = sys.argv
+
+if len(args) == 1:
+    args = None
+else:
+    args = args[1:]
+
+NotebookApp.launch_instance(argv)
