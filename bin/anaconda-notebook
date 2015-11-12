@@ -53,9 +53,9 @@ IPython.utils.path.ensure_dir_exists = ensure_dir_exists
 
 args = sys.argv
 if len(args) == 1:
-    args = None
+    args = ["notebook"]
 else:
-    args = args[1:]
+    args = ["notebook"] + args[1:]
 
 #setup jupyter_config_dir
 base_dir = os.environ.get('WAKARI_PROJECT_HOME')
