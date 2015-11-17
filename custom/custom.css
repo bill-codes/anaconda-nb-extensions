@@ -1,0 +1,169 @@
+@font-face {
+    font-family: 'CalibreWeb-Black';
+    src: url("fonts/CalibreWeb-Black.eot") format("embedded-opentype"), url("fonts/CalibreWeb-Black.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'CalibreWeb-Bold';
+    src: url("fonts/CalibreWeb-Black.eot") format("embedded-opentype"), url("fonts/CalibreWeb-Bold.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'CalibreWeb-Semibold';
+    src: url("fonts/CalibreWeb-Semibold.eot") format("embedded-opentype"), url("fonts/CalibreWeb-Semibold.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'CalibreWeb-Medium';
+    src: url("fonts/CalibreWeb-Medium.eot") format("embedded-opentype"), url("fonts/CalibreWeb-Medium.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'CalibreWeb-Regular';
+    src: url("fonts/CalibreWeb-Regular.eot") format("embedded-opentype"), url("fonts/CalibreWeb-Regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'CalibreWeb-Semibold';
+    src: url("fonts/CalibreWeb-Semibold.eot") format("embedded-opentype"), url("fonts/CalibreWeb-Semibold.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'CalibreWeb-Thin';
+    src: url("fonts/CalibreWeb-Thin.eot") format("embedded-opentype"), url("fonts/CalibreWeb-Thin.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+#header #header-container {
+    background: #15202b;
+    color: #fff;
+    padding: 7px;
+}
+
+#site {
+    color: #f6f6f6;
+}
+
+.cell.selected {border-radius: 10px; border-color: #1b2833;}*/
+.cell.edit_mode {border-radius: 10px; border: thin solid #C79595;}
+.text_cell_render, .output_html {color: #565E65;}
+
+.cell {
+    width: 95%;
+}
+
+div #notebook { /* centre the content */
+    background: #fff; /* white background for content */
+    width: 100%;
+    margin: auto;
+    padding-left: 1em;
+}
+
+#notebook li { /* More space between bullet points */
+    margin-top:0.4em;
+}
+
+div.cell.code_cell.running {
+    background-color: rgba(164,188,194,.75);
+    border: #111 solid 8px;
+}
+
+div.cell.code_cell {
+    background-color: rgba(164,188,194,.25); /* Continuum L Gray with alpha 0.25*/
+    border-radius: 10px; /* rounded borders */
+    margin-top: 1em;
+    padding: 1em;
+}
+
+.text_cell_render{
+    font-family: "Lato", sans-serif;
+    font-weight: 100;
+    line-height: 110%;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.text_cell_render p{
+    color: #2c3339;
+    font-family: "Lato", sans-serif;
+    font-size: 1.5rem;
+    font-weight: 100;
+    line-height: 1.75rem;
+    margin: 0.5em 0 0 0;
+}
+
+.text_cell_render h1, h2, h3, h4, h5, h6 {
+    color: #1F7699;
+    font-family: "CalibreWeb-Semibold", sans-serif;
+    letter-spacing: 0.01em;
+    margin: 0.75em 0 0 0;
+}
+.text_cell_render h1 {
+    font-size: 2.25rem;
+    margin: 0.75em 0 0 0;
+}
+.text_cell_render h2 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    margin: 0.75em 0 0 0;
+}
+.text_cell_render h3 {
+    font-size: 1.5rem;
+    margin: 0.75em 0 0 0;
+}
+.text_cell_render h4 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0.75em 0 0 0;
+}
+.text_cell_render h5 {
+    margin: 0.75em 0 0 0;
+}
+.text_cell_render h6 {
+    margin: 0.75em 0 0 0;
+}
+.text_cell_render strong {
+    font-weight: 700;
+}
+.text_cell_render blockquote {
+    border-left: none;
+    color: #596772;
+    font-family: "CalibreWeb-Thin", sans-serif;
+    font-size: 1.5rem;
+    font-style: italic;
+    font-weight: 100;
+    letter-spacing: 0.01em;
+    margin: 1em 1em 2em;
+    max-width: 740px;
+    padding: .5em 1em;
+}
+
+.text_cell_render blockquote:before, blockquote:after {
+  background: #1F7699;
+  background: -webkit-gradient(linear, -10% 100%, 100% 10%,
+              from(transparent), to(transparent), color-stop(50%, #1F7699));
+  content: " ";
+  display: block;
+  height: 1px;
+  margin: .6em 0;
+}
+
+.CodeMirror{
+    font-family: "PT Mono", fixed;
+    font-size: 100%;
+}
+
+.output_area pre {
+    color: #2c3339;
+}
+
+.input_prompt {
+    color: #253746;
+}
