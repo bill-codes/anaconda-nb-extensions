@@ -1,22 +1,22 @@
 package:
   name: anaconda-notebook
-  version: 3.0
+  version: "4.0.4"
 
 requirements:
+  build:
+    - python
+    - notebook ==4.0.4
   run:
     - python
-    - ipython
-    - pyzmq
-    - tornado
-    - jinja2
-    - jsonschema
+    - notebook ==4.0.4
+    - ipywidgets
+    - ipyparallel
+    - pandoc
+    - jsonpointer
 
-app:
-  entry: anaconda-notebook.bat                          [win]
-  entry: anaconda-notebook                              [linux]
-  entry: open ${PREFIX}/bin/anaconda_notebook.command   [osx]
-  summary: Anaconda notebook (enhanced IPython)
+source:
+  git_url: ../
 
 about:
-  home: http://ipython.org/notebook.html
-  license: BSD
+  home: https://github.com/ContinuumIO/wakari-app-ipython
+  license: TBD

@@ -1,13 +1,18 @@
 # Anaconda notebook
 
-**Conda recipe** to install Anaconda-notebook, a wrapper around `ipython notebook`.
-Includes anaconda styles and specific extensions like:
+This is the nascient anaconda-notebook which is based on the Jupyter notebook.
 
-- rcm
-- calico-cell-tools
-- calico-document-tools
-- calico-spell-check
+As you can see, this repo is mainly a conda recipe to build the anaconda-notebook
+with the specific customizations, mainly extensions to enhance the user experience
+and improve the communication with Anaconda Cloud, conda and other Continuum packages
 
-Run `conda build .`. Install it with `conda install anaconda-notebook --use-local`
-and call it with `anaconda-notebook`. Once you execute this tool it will automatically
-install the extension in `~/.ipython`.
+To manually build the package, you should run:
+
+`conda build conda.recipe`
+
+To install it:
+
+conda install -c wakari --use-local anaconda-notebook
+
+Note: the `wakari` channel is needed here to install the jsonpointer and pandoc
+which are run dependencies for the anaconda-notebook.
