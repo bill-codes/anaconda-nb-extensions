@@ -8,12 +8,12 @@
 
 div.scrollable {
     overflow-y: auto;
-    height: 200px;
+    height: 180px;
 }
 
 div.big_scrollable {
     overflow-y: auto;
-    height: 300px;
+    height: 280px;
 }
 
 div.half_width {
@@ -27,4 +27,9 @@ input.small-input {
     width: 100%;
     padding: 2px 6px 0px 6px;
     font-size: 10px;
+}
+
+#environments {
+    width: 98%;
+    margin: 1%;
 }

@@ -72,6 +72,51 @@ define([
         return $('<a href="' + url + '"/>').html(text);
     }
 
+    function AjaxSettings(settings) {
+        settings.cache = false;
+        settings.dataType = 'json';
+
+        if(! settings.type) {
+            settings.type = 'GET';
+        }
+        return settings;
+    }
+
+    function confirm(title, msg, button_text, callback) {
+        var buttons = { Cancel: {} };
+        buttons[button_text] = {
+            class: 'btn-danger',
+            click: callback
+        }
+
+        dialog.modal({
+            title: title,
+            body: msg,
+            buttons: buttons
+        });
+    }
+
+    function prompt(title, msg, label, button_text, callback) {
+        var that = this;
+
+        var dialogform = $('<div/>').attr('title', msg).append(
+            $('<form/>').append(
+                $('<fieldset/>').append(
+                    $('<label/>')
+                    .attr('for','prompt_name')
+                    .text(label)
+                )
+                .append($('<input/>').attr('id', 'prompt_name'))
+            )
+        );
+
+        function ok() {
+            callback(dialogform.find('input').val());
+        }
+
+        confirm(title, dialogform, button_text, ok);
+    }
+
     function pluralize(count_or_array, single_word, plural_word) {
         var count = (count_or_array instanceof Array) ? count_or_array.length : count_or_array;
         var plural = (count !== 1);
@@ -106,6 +151,9 @@ define([
         'column': column,
         'button': button,
         'link': link,
+        'AjaxSettings': AjaxSettings,
+        'confirm': confirm,
+        'prompt': prompt,
         'pluralize': pluralize
     };
 });

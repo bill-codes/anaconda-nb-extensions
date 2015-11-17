@@ -55,13 +55,20 @@ class EnvManager(LoggingConfigurable):
         info = json.loads(self._execute('conda info --json'))
         default_env = info['default_prefix']
 
+        root_env = {
+                'name': 'root',
+                'dir': info['root_prefix'],
+                'is_default': info['root_prefix'] == default_env
+        }
+
         def get_info(env):
             return {
                 'name': os.path.basename(env),
                 'dir': env,
                 'is_default': env == default_env
             }
-        return map(get_info, info['envs'])
+
+        return [root_env] + map(get_info, info['envs'])
 
     def delete_env(self, env):
         output = self._execute('conda env remove -y -q --json -n', env)
