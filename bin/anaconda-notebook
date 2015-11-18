@@ -80,8 +80,8 @@ if not exists(jupyter_data_dir):
     os.makedirs(jupyter_data_dir)
 
 # Keep open the posibilty to point to other config locations
-os.environ['JUPYTER_CONFIG_DIR'] = jupyter_config_dir
-os.environ['JUPYTER_DATA_DIR'] = jupyter_data_dir
+os.environ['ANACONDA_CONFIG_DIR'] = jupyter_config_dir
+os.environ['ANACONDA_DATA_DIR'] = jupyter_data_dir
 
 # Look for files copied from source (by the recipe) into the environment
 source_config_dir = join(dirname(dirname(__file__)), 
@@ -93,7 +93,9 @@ source_data_dir = join(dirname(dirname(__file__)),
                       'anaconda_notebook',
                       'jupyter_data_dir')
 
-# Our own copytree...
+# Our own copytree, we are forcing the installation on every start
+# TODO: we probably need a soft default checking if there is a file or folder
+# and enable a --force option.
 def copytree(src, dst, is_file=False):
     if not is_file:
         if exists(dst):
@@ -106,7 +108,7 @@ def copytree(src, dst, is_file=False):
 
 # Copy jupyter config files
 
-#TODO: use config manager to load the extension...
+# TODO: use config manager to load the extension...
 copytree(join(source_config_dir, 'custom', 'custom.js'),
          join(jupyter_config_dir, 'custom', 'custom.js'),
          is_file=True
@@ -132,6 +134,8 @@ for nbextension in nbextensions:
              join(jupyter_data_dir, 'nbextensions', nbextension))
 
 # Run the syncer
+# TODO: we need to evaluate the migration of this toa a server-based extension
+# triggered before the notebook load the kernels...
 cmd = [sys.executable,
        join(jupyter_data_dir, 'nbextensions', 'syncer', 'sync.py'),
        '-p',
@@ -147,4 +151,8 @@ if len(args) == 1:
 else:
     args = args[1:]
 
+# TODO:
+# * Launch from the executable but also from jupyter notebook --anaconda
+# * Provide options to install into the --user ans --system space
+# * Deal with extension installed from outside the repo
 NotebookApp.launch_instance(argv=args)
