@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import shutil
+import site
 import subprocess
 import sys
 
@@ -128,6 +129,7 @@ for config_file in config_files:
     )
 
 # Copy jupyter data files
+# First copy nbextensions
 nbextensions = ['defaulter',
                 'locker',
                 'rcm',
@@ -138,8 +140,17 @@ for nbextension in nbextensions:
     copytree(join(source_data_dir, 'nbextensions', nbextension),
              join(jupyter_data_dir, 'nbextensions', nbextension))
 
+# Then copy nbserextensions extensions
+nbserextensions = ['conda-envs']
+
+site_packages = site.getsitepackages()[0]
+
+for nbserextension in nbserextensions:
+    copytree(join(source_data_dir, 'nbserextensions', nbserextension),
+             join(site_packages, nbserextension))
+
 # Run the syncer
-# TODO: we need to evaluate the migration of this toa a server-based extension
+# TODO: we need to evaluate the migration of this to a server-based extension
 # triggered before the notebook load the kernels...
 cmd = [sys.executable,
        join(jupyter_data_dir, 'nbextensions', 'syncer', 'sync.py'),
