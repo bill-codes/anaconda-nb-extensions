@@ -96,6 +96,7 @@ source_data_dir = join(dirname(dirname(__file__)),
 # Our own copytree, we are forcing the installation on every start
 # TODO: we probably need a soft default checking if there is a file or folder
 # and enable a --force option.
+# TODO: evaluate the migration to use the jupyter nbextension install mechanism
 def copytree(src, dst, is_file=False):
     if not is_file:
         if exists(dst):
