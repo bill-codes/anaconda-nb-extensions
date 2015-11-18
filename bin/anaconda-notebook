@@ -115,9 +115,8 @@ def copytree(src, dst, is_file=False):
 # Copy jupyter config files
 
 # TODO: use config manager to load the extension...
-copytree(join(source_config_dir, 'custom', 'custom.js'),
-         join(jupyter_config_dir, 'custom', 'custom.js'),
-         is_file=True
+copytree(join(source_config_dir, 'custom'),
+         join(jupyter_config_dir, 'custom'),
 )
 
 config_files = ['jupyter_notebook_config.py']
