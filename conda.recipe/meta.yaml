@@ -15,8 +15,8 @@ requirements:
     - jsonpointer
 
 source:
-  git_url: ../
+  path: ../
 
 about:
-  home: https://github.com/ContinuumIO/wakari-app-ipython
+  home: https://github.com/Anaconda-Server/anaconda-notebook
   license: TBD
