@@ -32,7 +32,6 @@ define(function(require) {
                     )
                 );
 
-                models.base_url = IPython.notebook_list.base_url;
                 views.EnvView.init();
                 views.AvailView.init();
                 views.InstalledView.init();
