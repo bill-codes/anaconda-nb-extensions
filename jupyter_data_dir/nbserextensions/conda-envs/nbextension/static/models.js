@@ -119,8 +119,35 @@ define([
         view:     NullView,
 
         load: function() {
-            // Search for empty string will return all packaged in configured channels.
-            this.conda_search('');
+            // Load the package list via ajax to the /packages/available endpoint
+            var that = this;
+
+            function handle_response(packages, status, xhr) {
+                if(xhr.status == 202) {
+                    // "Accepted" - try back later on this async request
+                    setTimeout(function() {
+                        that.load();
+                    }, 1000);
+                }
+                else {
+                    $.each(packages, function(index, pkg) {
+                        pkg.selected = false;
+                    });
+
+                    that.packages = packages;
+                    that.view.refresh(that.packages);
+                }
+            }
+
+            var error_callback = common.MakeErrorCallback('Error', 'An error occurred while retrieving package information.');
+
+            var settings = common.AjaxSettings({
+                success : common.SuccessWrapper(handle_response, error_callback),
+                error : error_callback
+            });
+
+            var url = utils.url_path_join(base_url, 'packages', 'available');
+            $.ajax(url, settings);
         },
 
         get_selection: function() {
@@ -139,30 +166,6 @@ define([
             return this.get_selection().map(function(pkg) {
                 return pkg.name;
             });
-        },
-
-        conda_search: function(query) {
-            // Load the package list via ajax to the /packages/search endpoint
-            var that = this;
-
-            function handle_response(packages, status, xhr) {
-                $.each(packages, function(index, pkg) {
-                    pkg.selected = false;
-                });
-
-                that.packages = packages;
-                that.view.refresh(that.packages);
-            }
-
-            var error_callback = common.MakeErrorCallback('Error', 'An error occurred while retrieving package information.');
-
-            var settings = common.AjaxSettings({
-                success : common.SuccessWrapper(handle_response, error_callback),
-                error : error_callback
-            });
-
-            var url = utils.url_path_join(base_url, 'packages', 'search') + '?q=' + encodeURIComponent(query);
-            $.ajax(url, settings);
         },
 
         conda_install: function() {
