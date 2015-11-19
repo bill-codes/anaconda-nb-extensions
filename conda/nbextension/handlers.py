@@ -6,6 +6,10 @@ import logging
 import os
 import sys
 
+from pkg_resources import parse_version
+from subprocess import Popen
+from tempfile import TemporaryFile
+
 from tornado import web
 
 from notebook.utils import url_path_join as ujoin
@@ -89,6 +93,74 @@ class EnvPkgActionHandler(EnvHandler):
         self.finish(json.dumps(resp))
 
 
+class CondaSearcher(object):
+    def __init__(self):
+        self.conda_process = None
+        self.conda_temp = None
+
+    def list_available(self):
+        if self.conda_process is not None:
+            # already running, check for completion
+            log.debug('Already running: pid %s', self.conda_process.pid)
+
+            status = self.conda_process.poll()
+            log.debug('Status %s', status)
+
+            if status is not None:
+                # completed, return the data
+                log.debug('Done, reading output')
+                self.conda_process = None
+
+                self.conda_temp.seek(0)
+                data = json.loads(self.conda_temp.read())
+                self.conda_temp = None
+
+                if 'error' in data:
+                    # we didn't get back a list of packages, we got a dictionary with error info
+                    return data
+
+                packages = []
+
+                for name, entries in data.items():
+                    max_version = None
+                    max_version_entry = None
+
+                    for entry in entries:
+                        version = parse_version(entry.get('version', ''))
+
+                        if max_version is None or version > max_version:
+                            max_version = version
+                            max_version_entry = entry
+
+                    packages.append(max_version_entry)
+
+                return sorted(packages, key=lambda entry:entry.get('name'))
+
+        else:
+            # Spawn subprocess to get the data
+            log.debug('Starting conda process')
+            self.conda_temp = TemporaryFile()
+            self.conda_process = Popen('conda search --json'.split(), stdout=self.conda_temp, bufsize=4096)
+            log.debug('Started: pid %s', self.conda_process.pid)
+
+        return None
+
+searcher = CondaSearcher()
+
+class AvailablePackagesHandler(EnvHandler):
+
+    @web.authenticated
+    def get(self):
+        data = searcher.list_available()
+
+        if data is None:
+            # tell client to check back later
+            self.clear()
+            self.set_status(202) # Accepted
+            self.finish('{}')
+        else:
+            self.finish(json.dumps(data))
+
 class SearchHandler(EnvHandler):
 
     @web.authenticated
@@ -114,6 +186,7 @@ default_handlers = [
     (r"/environments/%s/packages/%s" % (_env_regex, _pkg_action_regex), EnvPkgActionHandler),
     (r"/environments/%s/%s" % (_env_regex, _env_action_regex), EnvActionHandler),
     (r"/environments/%s" % _env_regex, EnvHandler),
+    (r"/packages/available", AvailablePackagesHandler),
     (r"/packages/search", SearchHandler),
 ]
 
