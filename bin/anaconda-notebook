@@ -163,9 +163,13 @@ subprocess.check_call(cmd)
 args = sys.argv
 
 if len(args) == 1:
-    args = None
+    args = []
 else:
     args = args[1:]
+
+# Load our custom config file
+args = args + ["--JupyterApp.config_file=" + 
+               join(jupyter_config_dir, "anaconda_notebook_config.py")]
 
 # TODO:
 # * Launch from the executable but also from jupyter notebook --anaconda
