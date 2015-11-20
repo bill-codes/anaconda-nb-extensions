@@ -73,14 +73,6 @@ else:
     jupyter_config_dir = paths.ENV_CONFIG_PATH[0]
     jupyter_data_dir = paths.ENV_JUPYTER_PATH[0]
 
-# Make sure the locations exists
-#if not exists(jupyter_config_dir):
-#    os.makedirs(jupyter_config_dir)
-#if not exists(join(jupyter_config_dir, 'custom')):
-#    os.makedirs(join(jupyter_config_dir, 'custom'))
-#if not exists(jupyter_data_dir):
-#    os.makedirs(jupyter_data_dir)
-
 # HACK to make read jupyter_config_dir from env because right now the frontend
 # config could be only loaded from the user space
 os.environ["JUPYTER_CONFIG_DIR"] = jupyter_config_dir
@@ -89,16 +81,6 @@ os.environ["JUPYTER_DATA_DIR"] = jupyter_data_dir
 # Keep open the posibilty to point to other config locations
 os.environ['ANACONDA_CONFIG_DIR'] = jupyter_config_dir
 os.environ['ANACONDA_DATA_DIR'] = jupyter_data_dir
-
-# Look for files copied from source (by the recipe) into the environment
-#source_config_dir = join(dirname(dirname(__file__)),
-#                        'etc',
-#                        'anaconda_notebook',
-#                        'jupyter_config_dir')
-#source_data_dir = join(dirname(dirname(__file__)),
-#                      'share',
-#                      'anaconda_notebook',
-#                      'jupyter_data_dir')
 
 # Our own copytree, we are forcing the installation on every start
 # TODO: we probably need a soft default checking if there is a file or folder
@@ -114,34 +96,13 @@ def copytree(src, dst, is_file=False):
             os.remove(dst)
         return shutil.copyfile(src, dst)
 
-# Copy jupyter config files
+# NOTE: all the config and data files (extensions) are copied by the conda recipe
+# TODO: use config manager to load the extension
+# TODO: load theme by template
+# TODO: put template and logo into anaconda_custom
 
-# TODO: use config manager to load the extension...
-#copytree(join(source_config_dir, 'custom'),
-#         join(jupyter_config_dir, 'custom'),
-#)
-
-#config_files = ['jupyter_notebook_config.py']
-
-#for config_file in config_files:
-#    copytree(join(source_config_dir, config_file),
-#             join(jupyter_config_dir, config_file),
-#             is_file=True
-#    )
-
-# Copy jupyter data files
-# First copy nbextensions
-#nbextensions = ['defaulter',
-#                'locker',
-#                'rcm',
-#                'syncer',
-#                'utils']
-
-#for nbextension in nbextensions:
-#    copytree(join(source_data_dir, 'nbextensions', nbextension),
-#             join(jupyter_data_dir, 'nbextensions', nbextension))
-
-# Then copy nbserextensions extensions
+# Copy nbserextensions extensions
+# TODO: deal with installation in the extension conda recipe, not here...
 nbserextensions = ['conda-envs']
 
 site_packages = site.getsitepackages()[0]
@@ -153,6 +114,7 @@ for nbserextension in nbserextensions:
 # Run the syncer
 # TODO: we need to evaluate the migration of this to a server-based extension
 # triggered before the notebook load the kernels...
+# TODO: Use a KernelSpec custom manager to do this...
 cmd = [sys.executable,
        join(jupyter_data_dir, 'nbextensions', 'syncer', 'sync.py'),
        '-p',
