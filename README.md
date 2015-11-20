@@ -12,7 +12,4 @@ To manually build the package, you should run:
 
 To install it:
 
-conda install -c wakari --use-local anaconda-notebook
-
-Note: the `wakari` channel is needed here to install the jsonpointer and pandoc
-which are run dependencies for the anaconda-notebook.
+`conda install -c anaconda-notebook --use-local anaconda-notebook`
