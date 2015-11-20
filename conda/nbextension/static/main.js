@@ -28,6 +28,13 @@ define(function(require) {
                         .text('Conda')
                         .click(function (e) {
                             window.history.pushState(null, null, '#conda');
+
+                            // load info when switching to Conda tab
+                            models.environments.load();
+
+                            setTimeout(function() {
+                                models.available.load();
+                            }, 2000);
                         })
                     )
                 );
@@ -39,11 +46,6 @@ define(function(require) {
                 models.environments.view = views.EnvView;
                 models.available.view = views.AvailView;
                 models.installed.view = views.InstalledView;
-                models.environments.load();
-
-                setTimeout(function() {
-                    models.available.load();
-                }, 2000);
             }
         });
     }
