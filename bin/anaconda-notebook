@@ -84,6 +84,7 @@ else:
 # HACK to make read jupyter_config_dir from env because right now the frontend
 # config could be only loaded from the user space
 os.environ["JUPYTER_CONFIG_DIR"] = jupyter_config_dir
+os.environ["JUPYTER_DATA_DIR"] = jupyter_data_dir
 
 # Keep open the posibilty to point to other config locations
 os.environ['ANACONDA_CONFIG_DIR'] = jupyter_config_dir
