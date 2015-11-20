@@ -78,10 +78,6 @@ else:
 os.environ["JUPYTER_CONFIG_DIR"] = jupyter_config_dir
 os.environ["JUPYTER_DATA_DIR"] = jupyter_data_dir
 
-# Keep open the posibilty to point to other config locations
-os.environ['ANACONDA_CONFIG_DIR'] = jupyter_config_dir
-os.environ['ANACONDA_DATA_DIR'] = jupyter_data_dir
-
 # Our own copytree, we are forcing the installation on every start
 # TODO: we probably need a soft default checking if there is a file or folder
 # and enable a --force option.
