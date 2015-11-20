@@ -68,11 +68,10 @@ def main(jupyter_config_dir, jupyter_data_dir):
         args = args[1:]
 
     # Load our custom config file
-    args = args + ["--JupyterApp.config_file=" +
-                   join(jupyter_config_dir, "anaconda_notebook_config.py")]
+    config_file = join(jupyter_config_dir, "anaconda_notebook_config.py")
 
     # TODO:
     # * Launch from the executable but also from jupyter notebook --anaconda
     # * Provide options to install into the --user ans --system space
     # * Deal with extension installed from outside the repo
-    NotebookApp.launch_instance(argv=args)
+    NotebookApp.launch_instance(argv=args, config_file=config_file)
