@@ -5,4 +5,4 @@ mkdir "%PREFIX%\share\jupyter"
 xcopy /E jupyter_data_dir\* "%PREFIX%\share\jupyter"
 
 mkdir "%PREFIX%\bin"
-xcopy bin\* "%PREFIX%\bin"
+xcopy bin\* "%PREFIX%\Scripts"
