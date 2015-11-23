@@ -31,10 +31,7 @@ define(function(require) {
 
                             // load info when switching to Conda tab
                             models.environments.load();
-
-                            setTimeout(function() {
-                                models.available.load();
-                            }, 2000);
+                            models.available.load();
                         })
                     )
                 );
