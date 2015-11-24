@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+from jupyter_core import paths
+from anaconda_notebook import main
+
+if __name__ == '__main__':
+    # Get the config and data dir from the environment
+    jupyter_config_dir = paths.ENV_CONFIG_PATH[0]
+    jupyter_data_dir = paths.ENV_JUPYTER_PATH[0]
+
+    # Entry point for wakari if we decide to have the anaconda notebook
+    # into the next WE release 
+    main(jupyter_config_dir, jupyter_data_dir)

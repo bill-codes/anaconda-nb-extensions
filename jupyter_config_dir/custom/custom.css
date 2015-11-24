@@ -46,11 +46,7 @@
     padding: 7px;
 }
 
-#site {
-    color: #f6f6f6;
-}
-
-.cell.selected {border-radius: 10px; border-color: #1b2833;}*/
+.cell.selected {border-radius: 10px; border-color: #1b2833;}
 .cell.edit_mode {border-radius: 10px; border: thin solid #C79595;}
 .text_cell_render, .output_html {color: #565E65;}
 
