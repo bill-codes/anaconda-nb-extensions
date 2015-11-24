@@ -55,7 +55,7 @@ define([
     }
 
     function icon(name) {
-        return $('<i/>'  ).addClass('fa fa-' + name);
+        return $('<i/>'  ).addClass('icon-button fa fa-' + name);
     }
 
     function column(name, width) {

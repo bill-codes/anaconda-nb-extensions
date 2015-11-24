@@ -139,7 +139,7 @@ class CondaSearcher(object):
         else:
             # Spawn subprocess to get the data
             log.debug('Starting conda process')
-            self.conda_temp = TemporaryFile(mode='w+')
+            self.conda_temp = TemporaryFile()
             self.conda_process = Popen('conda search --json'.split(), stdout=self.conda_temp, bufsize=4096)
             log.debug('Started: pid %s', self.conda_process.pid)
 

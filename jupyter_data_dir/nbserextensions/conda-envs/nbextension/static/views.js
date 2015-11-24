@@ -66,7 +66,7 @@ define([
 
                     var xform = that.transforms[column.attr];
                     if(xform) {
-                        $cell.append(xform(row));
+                        $cell.append(xform(row, $row));
                     }
                     else {
                         // Default is to stuff text in the div
@@ -99,10 +99,10 @@ define([
         selectable: false,
         model:      models.environments,
         columns:    [
+            { heading: 'Action',    attr: '_action',    width: 1 },
             { heading: 'Name',      attr: 'name',       width: 3 },
             { heading: 'Default?',  attr: 'is_default', width: 1 },
-            { heading: 'Directory', attr: 'dir',        width: 6 },
-            { heading: 'Action',    attr: '_action',    width: 2 },
+            { heading: 'Directory', attr: 'dir',        width: 7 },
         ],
 
         transforms: {
@@ -114,28 +114,40 @@ define([
             },
 
             is_default: function(row) {
-                return common.icon(row.is_default ? 'check' : '');
+                return $('<div class="default_col">').append(common.icon(row.is_default ? 'check' : ''));
             },
 
-            _action: function(row) {
+            _action: function(row, $row) {
                 // This is a pseudo-attribute
                 // TODO: the view should not know about this URL, need a model method
                 var export_url = utils.url_join_encode(models.base_url, 'environments', row.name, 'export');
 
-                return $('<span/>')
+                function ActionMessage(msg) {
+                    var $replacement = $('<div class="inprogress"/>').text(msg);
+                    $row.find('.action_col').replaceWith($replacement);
+                }
+
+                return $('<span class="action_col"/>')
                     .addClass('btn-group')
-                    .append(common.button('Delete', 'trash-o').click(function () {
-                        var msg = 'Are you sure you want to permanently delete "' + row.name + '" ?';
-                        common.confirm('Delete Environment', msg, 'Delete', function() {
-                            models.environments.remove(row);
-                        });
-                    }))
-                    .append(common.button('Clone', 'copy').click(function () {
+                    .append(common.link(export_url, common.icon('external-link')))
+                    .append(common.icon('copy').click(function () {
                         common.prompt('Clone Environment', 'Create a copy of "' + row.name + '"', 'New name:', 'Clone', function(new_name) {
+                            ActionMessage('Cloning...');
                             models.environments.clone(row, new_name);
                         });
                     }))
-                    .append(common.link(export_url, common.button('Export', 'external-link')));
+                    .append(common.icon('trash-o').click(function () {
+                        var msg = 'Are you sure you want to permanently delete environment "' + row.name + '" ?';
+                        common.confirm('Delete Environment', msg, 'Delete', function() {
+                            ActionMessage('Deleting...');
+
+                            // disable environment name link
+                            var $link = $row.find('a').first();
+                            $link.replaceWith($link.text());
+
+                            models.environments.remove(row);
+                        });
+                    }));
             }
         },
 
@@ -237,8 +249,12 @@ define([
             },
 
             '#update_pkgs': function() {
-                var msg = 'Are you sure you want to update ' +
-                            common.pluralize(models.installed.get_selection().length, 'package') +
+                var count = models.installed.get_selection().length;
+                var packages = 'ALL packages';
+                if(count > 0) {
+                    packages = common.pluralize(count, 'package');
+                }
+                var msg = 'Are you sure you want to update ' + packages +
                             ' in the environment "' + models.environments.selected.name + '" ?';
 
                 common.confirm('Update Packages', msg, 'Update', function() {
@@ -247,8 +263,13 @@ define([
             },
 
             '#remove_pkgs': function() {
+                var count = models.installed.get_selection().length;
+
+                if(count === 0) {
+                    return;
+                }
                 var msg = 'Are you sure you want to remove ' +
-                            common.pluralize(models.installed.get_selection().length, 'package') +
+                            common.pluralize(count, 'package') +
                             ' from the environment "' + models.environments.selected.name + '" ?';
 
                 common.confirm('Remove Packages', msg, 'Remove', function() {
