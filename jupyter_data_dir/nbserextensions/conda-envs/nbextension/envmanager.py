@@ -48,7 +48,7 @@ class EnvManager(LoggingConfigurable):
         if len(output) > MAX_LOG_OUTPUT:
             log.debug('...')
 
-        return output
+        return outputt.decode("utf-8")
 
     def list_envs(self):
         """List all environments that conda knows about"""
@@ -68,7 +68,7 @@ class EnvManager(LoggingConfigurable):
                 'is_default': env == default_env
             }
 
-        return [root_env] + map(get_info, info['envs'])
+        return [root_env] + [get_info(env) for env in info['envs']]
 
     def delete_env(self, env):
         output = self._execute('conda env remove -y -q --json -n', env)
@@ -89,7 +89,7 @@ class EnvManager(LoggingConfigurable):
             # we didn't get back a list of packages, we got a dictionary with error info
             return data
 
-        return map(pkg_info, data)
+        return [pkg_info(package) for package in data]
 
     def check_update(self, env, packages):
         output = self._execute('conda update --dry-run -q --json -n', env, *packages)
@@ -103,8 +103,8 @@ class EnvManager(LoggingConfigurable):
                 # LINK entries are package-version-build /path/to/link num
                 return s.split(' ')[0]
 
-            package_versions = map(link_pkg, data['actions'].get('LINK', []))
-            return list(map(pkg_info, package_versions))
+            package_versions = [link_pkg(link) for link in  data['actions'].get('LINK', [])]
+            return [pkg_info(pkg_version) for pkg_version in package_versions]
         else:
             # no action plan returned means everything is already up to date
             return []

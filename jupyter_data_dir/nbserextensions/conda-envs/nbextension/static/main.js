@@ -32,7 +32,6 @@ define(function(require) {
                     )
                 );
 
-                models.base_url = IPython.notebook_list.base_url;
                 views.EnvView.init();
                 views.AvailView.init();
                 views.InstalledView.init();
@@ -40,11 +39,9 @@ define(function(require) {
                 models.environments.view = views.EnvView;
                 models.available.view = views.AvailView;
                 models.installed.view = views.InstalledView;
-                models.environments.load();
 
-                setTimeout(function() {
-                    models.available.load();
-                }, 2000);
+                models.environments.load();
+                models.available.load();
             }
         });
     }
