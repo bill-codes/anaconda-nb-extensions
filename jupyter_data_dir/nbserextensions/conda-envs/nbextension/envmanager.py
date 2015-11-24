@@ -48,7 +48,7 @@ class EnvManager(LoggingConfigurable):
         if len(output) > MAX_LOG_OUTPUT:
             log.debug('...')
 
-        return outputt.decode("utf-8")
+        return output.decode("utf-8")
 
     def list_envs(self):
         """List all environments that conda knows about"""
