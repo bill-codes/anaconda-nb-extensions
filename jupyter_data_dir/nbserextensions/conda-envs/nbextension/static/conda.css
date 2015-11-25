@@ -2,6 +2,14 @@
     text-align: right;
 }
 
+.action_col a {
+    color: black;
+}
+
+.default_col {
+    text-align: center;
+}
+
 .list_item > div input.flush-left {
     margin-left: 4px;
 }
@@ -32,4 +40,23 @@ input.small-input {
 #environments {
     width: 98%;
     margin: 1%;
+}
+
+div.inprogress {
+    background-color: #8F8;
+    width: 72px;
+    text-align: center;
+}
+
+.icon-button {
+    padding-right: 8px;
+}
+
+label {
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+
+.new_env_form input {
+    margin-right: 15px;
 }

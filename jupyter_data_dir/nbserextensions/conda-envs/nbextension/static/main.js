@@ -28,10 +28,6 @@ define(function(require) {
                         .text('Conda')
                         .click(function (e) {
                             window.history.pushState(null, null, '#conda');
-
-                            // load info when switching to Conda tab
-                            models.environments.load();
-                            models.available.load();
                         })
                     )
                 );
@@ -43,6 +39,9 @@ define(function(require) {
                 models.environments.view = views.EnvView;
                 models.available.view = views.AvailView;
                 models.installed.view = views.InstalledView;
+
+                models.environments.load();
+                models.available.load();
             }
         });
     }

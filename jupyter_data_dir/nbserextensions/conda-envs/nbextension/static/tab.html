@@ -1,11 +1,12 @@
 <div id="conda" class="tab-pane">
   <div id="environments">
     <div id="env_toolbar" class="list_toolbar row">
-      <div class="col-xs-9 no-padding">
+      <div class="col-xs-10 no-padding">
         <span id="env_list_info" class="toolbar_info">Conda environments</span>
       </div>
       <div class="col-xs-2 no-padding tree-buttons">
         <span id="env_buttons" class="toolbar_buttons pull-right">
+        <button id="new_env" title="Create new environment" class="btn btn-default btn-xs"><i class="fa fa-plus"></i></button>
         <button id="refresh_env_list" title="Refresh environment list" class="btn btn-default btn-xs"><i class="fa fa-refresh"></i></button>
         </span>
       </div>
@@ -23,14 +24,13 @@
       <div class="col-xs-6 no-padding">
         <span id="avail_list_info" class="toolbar_info">Available packages</span>
       </div>
-      <div class="col-xs-4 no-padding tree-buttons">
+      <div class="col-xs-5 no-padding tree-buttons">
         <span id="avail_buttons" class="toolbar_buttons pull-right">
         <input id="searchbox" title="Search" placeholder="Search..." class="form-control small-input"/>
         </span>
       </div>
-      <div class="col-xs-2 no-padding tree-buttons">
+      <div class="col-xs-1 no-padding tree-buttons">
         <span id="avail_buttons" class="toolbar_buttons pull-right">
-        <button id="refresh_avail_list" title="Refresh package list" class="btn btn-default btn-xs"><i class="fa fa-refresh"></i></button>
         <button id="install" title="Install selected packages" class="btn btn-default btn-xs"><i class="fa fa-arrow-right"></i></button>
         </span>
       </div>

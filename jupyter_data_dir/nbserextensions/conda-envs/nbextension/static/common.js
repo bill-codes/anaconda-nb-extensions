@@ -17,7 +17,8 @@ define([
     'jquery',
     'base/js/utils',
     'base/js/dialog',
-], function(IPython, $, utils, dialog) {
+    'base/js/keyboard',
+], function(IPython, $, utils, dialog, keyboard) {
     "use strict";
 
     function SuccessWrapper(success_callback, error_callback) {
@@ -55,7 +56,7 @@ define([
     }
 
     function icon(name) {
-        return $('<i/>'  ).addClass('fa fa-' + name);
+        return $('<i/>'  ).addClass('icon-button fa fa-' + name);
     }
 
     function column(name, width) {
@@ -82,23 +83,39 @@ define([
         return settings;
     }
 
-    function confirm(title, msg, button_text, callback) {
+    function confirm(title, msg, button_text, callback, input) {
         var buttons = { Cancel: {} };
         buttons[button_text] = {
-            class: 'btn-danger',
+            class: 'btn-danger btn-primary',
             click: callback
         }
 
-        dialog.modal({
+        var opts = {
             title: title,
             body: msg,
             buttons: buttons
-        });
+        };
+
+        var d;
+
+        if(input !== undefined) {
+            opts.open = function () {
+                // Upon ENTER, click the OK button.
+                input.keydown(function (event) {
+                    if (event.which === keyboard.keycodes.enter) {
+                        d.find('.btn-primary').first().click();
+                        return false;
+                    }
+                });
+                input.focus();
+            }
+        }
+        d = dialog.modal(opts);
     }
 
-    function prompt(title, msg, label, button_text, callback) {
-        var that = this;
 
+    function prompt(title, msg, label, button_text, callback) {
+        var input = $('<input/>').attr('id', 'prompt_name');
         var dialogform = $('<div/>').attr('title', msg).append(
             $('<form/>').append(
                 $('<fieldset/>').append(
@@ -106,15 +123,15 @@ define([
                     .attr('for','prompt_name')
                     .text(label)
                 )
-                .append($('<input/>').attr('id', 'prompt_name'))
+                .append(input)
             )
         );
 
         function ok() {
-            callback(dialogform.find('input').val());
+            callback(input.val());
         }
 
-        confirm(title, dialogform, button_text, ok);
+        confirm(title, dialogform, button_text, ok, input);
     }
 
     function pluralize(count_or_array, single_word, plural_word) {

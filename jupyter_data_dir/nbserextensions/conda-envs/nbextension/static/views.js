@@ -8,6 +8,22 @@ define([
 ], function(IPython, $, utils, common, models) {
     "use strict";
 
+    function action_start(btn) {
+        var $btn = $(btn);
+        $btn.focus();
+
+        var $icon = $btn.find('i');
+        var old_classes = $icon.attr('class');
+        $icon.attr('class', 'fa fa-spinner fa-spin');
+        return old_classes;
+    }
+
+    function action_end(btn, old_classes) {
+        var $btn = $(btn);
+        $btn.blur();
+        $btn.find('i').attr('class', old_classes);
+    }
+
     var ListView = {
         selector:  null,
         model:     null,
@@ -66,7 +82,7 @@ define([
 
                     var xform = that.transforms[column.attr];
                     if(xform) {
-                        $cell.append(xform(row));
+                        $cell.append(xform(row, $row));
                     }
                     else {
                         // Default is to stuff text in the div
@@ -93,16 +109,39 @@ define([
 
     var EnvView = Object.create(ListView);
 
+    function new_env_prompt(callback) {
+        var input = $('<input id="env_name" name="name"/>');
+        var dialogform = $('<div/>').attr('title', 'Create New Environment').append(
+            $('<form class="new_env_form"/>').append(
+                $('<fieldset/>')
+                .append($('<label for="env_name">Name:</label>'))
+                .append(input)
+                .append($('<label for="env_type">Type:</label>'))
+                .append($('<select id="env_type" name="type">' +
+                                '<option value="python2">Python 2</option>' +
+                                '<option selected value="python3">Python 3</option>' +
+                                '<option value="r">R</option>' +
+                           '</select>'))
+            )
+        );
+
+        function ok() {
+            callback($('#env_name').val(), $('#env_type').val());
+        }
+
+        common.confirm('New Environment', dialogform, 'Create', ok, input);
+    }
+
     $.extend(EnvView, {
         selector:   '#environments',
         label:      'Conda environment',
         selectable: false,
         model:      models.environments,
         columns:    [
+            { heading: 'Action',    attr: '_action',    width: 1 },
             { heading: 'Name',      attr: 'name',       width: 3 },
             { heading: 'Default?',  attr: 'is_default', width: 1 },
-            { heading: 'Directory', attr: 'dir',        width: 6 },
-            { heading: 'Action',    attr: '_action',    width: 2 },
+            { heading: 'Directory', attr: 'dir',        width: 7 },
         ],
 
         transforms: {
@@ -114,35 +153,62 @@ define([
             },
 
             is_default: function(row) {
-                return common.icon(row.is_default ? 'check' : '');
+                return $('<div class="default_col">').append(common.icon(row.is_default ? 'check' : ''));
             },
 
-            _action: function(row) {
+            _action: function(row, $row) {
                 // This is a pseudo-attribute
                 // TODO: the view should not know about this URL, need a model method
                 var export_url = utils.url_join_encode(models.base_url, 'environments', row.name, 'export');
 
-                return $('<span/>')
+                function ActionMessage(msg) {
+                    var $replacement = $('<div class="inprogress"/>').text(msg);
+                    $row.find('.action_col').replaceWith($replacement);
+                }
+
+                return $('<span class="action_col"/>')
                     .addClass('btn-group')
-                    .append(common.button('Delete', 'trash-o').click(function () {
-                        var msg = 'Are you sure you want to permanently delete "' + row.name + '" ?';
-                        common.confirm('Delete Environment', msg, 'Delete', function() {
-                            models.environments.remove(row);
-                        });
-                    }))
-                    .append(common.button('Clone', 'copy').click(function () {
+                    .append(common.link(export_url, common.icon('external-link')))
+                    .append(common.icon('copy').click(function () {
                         common.prompt('Clone Environment', 'Create a copy of "' + row.name + '"', 'New name:', 'Clone', function(new_name) {
+                            ActionMessage('Cloning...');
                             models.environments.clone(row, new_name);
                         });
                     }))
-                    .append(common.link(export_url, common.button('Export', 'external-link')));
+                    .append(common.icon('trash-o').click(function () {
+                        var msg = 'Are you sure you want to permanently delete environment "' + row.name + '" ?';
+                        common.confirm('Delete Environment', msg, 'Delete', function() {
+                            ActionMessage('Deleting...');
+
+                            // disable environment name link
+                            var $link = $row.find('a').first();
+                            $link.replaceWith($link.text());
+
+                            models.environments.remove(row);
+                        });
+                    }));
             }
         },
 
         bindings: {
+            '#new_env': function() {
+                var btn = this;
+
+                new_env_prompt(function(name, type) {
+                    var btn_state = action_start(btn);
+                    models.environments.create(name, type).then(function() {
+                        action_end(btn, btn_state);
+                    });
+                });
+            },
             '#refresh_env_list': function() {
-                models.environments.load();
-            }
+                var btn = this;
+                var btn_state = action_start(btn);
+
+                models.environments.load().then(function() {
+                    action_end(btn, btn_state);
+                });
+            },
         }
     });
 
@@ -177,15 +243,26 @@ define([
         },
 
         bindings: {
-            '#refresh_avail_list': function() { models.available.load(); },
+            '#refresh_avail_list': function() {
+                var btn = this;
+                var btn_state = action_start(btn);
+
+                models.available.load().then(function() {
+                    action_end(btn, btn_state);
+                });
+            },
 
             '#install': function() {
+                var btn = this;
                 var msg = 'Are you sure you want to install ' +
                             common.pluralize(models.available.get_selection().length, 'package') +
                             ' into the environment "' + models.environments.selected.name + '" ?';
 
                 common.confirm('Install Packages', msg, 'Install', function() {
-                    models.available.conda_install();
+                    var btn_state = action_start(btn);
+                    models.available.conda_install().then(function() {
+                        action_end(btn, btn_state);
+                    });
                 });
             }
         },
@@ -230,29 +307,58 @@ define([
         },
 
         bindings: {
-            '#refresh_pkg_list': function() { models.installed.load(); },
+            '#refresh_pkg_list': function() {
+                var btn = this;
+                var btn_state = action_start(btn);
+
+                models.installed.load().then(function() {
+                    action_end(btn, btn_state);
+                });
+            },
 
             '#check_update': function() {
-                models.installed.conda_check_updates();
+                var btn = this;
+                var btn_state = action_start(btn);
+
+                models.installed.conda_check_updates().then(function() {
+                    action_end(btn, btn_state);
+                });
             },
 
             '#update_pkgs': function() {
-                var msg = 'Are you sure you want to update ' +
-                            common.pluralize(models.installed.get_selection().length, 'package') +
+                var btn = this;
+                var count = models.installed.get_selection().length;
+                var packages = 'ALL packages';
+                if(count > 0) {
+                    packages = common.pluralize(count, 'package');
+                }
+                var msg = 'Are you sure you want to update ' + packages +
                             ' in the environment "' + models.environments.selected.name + '" ?';
 
                 common.confirm('Update Packages', msg, 'Update', function() {
-                    models.installed.conda_update();
+                    var btn_state = action_start(btn);
+                    models.installed.conda_update().then(function() {
+                        action_end(btn, btn_state);
+                    });
                 });
             },
 
             '#remove_pkgs': function() {
+                var btn = this;
+                var count = models.installed.get_selection().length;
+
+                if(count === 0) {
+                    return;
+                }
                 var msg = 'Are you sure you want to remove ' +
-                            common.pluralize(models.installed.get_selection().length, 'package') +
+                            common.pluralize(count, 'package') +
                             ' from the environment "' + models.environments.selected.name + '" ?';
 
                 common.confirm('Remove Packages', msg, 'Remove', function() {
-                    models.installed.conda_remove();
+                    var btn_state = action_start(btn);
+                    models.installed.conda_remove().then(function() {
+                        action_end(btn, btn_state);
+                    });
                 });
             }
         },
