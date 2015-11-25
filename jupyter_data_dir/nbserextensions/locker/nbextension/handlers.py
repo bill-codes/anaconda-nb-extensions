@@ -2,14 +2,9 @@
 # Distributed under the terms of the Modified BSD License.
 
 import getpass
-import json
 import logging
 import os
 import sys
-
-from pkg_resources import parse_version
-from subprocess import Popen
-from tempfile import TemporaryFile
 
 from tornado import web
 

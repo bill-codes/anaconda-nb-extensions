@@ -2,7 +2,7 @@
 # Locker Extension
 
 This extension provides a cooperative locking service. This is useful
-when multiple notebook servers and run from the same underlying filesystem.
+when multiple notebook servers run from the same underlying filesystem.
 The locker extension will create a .lock file alongside the notebook,
 indicating which user currently holds the file lock.
 
