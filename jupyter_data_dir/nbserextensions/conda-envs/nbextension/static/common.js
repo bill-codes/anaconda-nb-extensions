@@ -17,7 +17,8 @@ define([
     'jquery',
     'base/js/utils',
     'base/js/dialog',
-], function(IPython, $, utils, dialog) {
+    'base/js/keyboard',
+], function(IPython, $, utils, dialog, keyboard) {
     "use strict";
 
     function SuccessWrapper(success_callback, error_callback) {
@@ -82,21 +83,27 @@ define([
         return settings;
     }
 
-    function confirm(title, msg, button_text, callback) {
+    function confirm(title, msg, button_text, callback, options) {
         var buttons = { Cancel: {} };
         buttons[button_text] = {
-            class: 'btn-danger',
+            class: 'btn-danger btn-primary',
             click: callback
         }
 
-        dialog.modal({
+        var opts = {
             title: title,
             body: msg,
             buttons: buttons
-        });
+        };
+        if(options !== undefined) {
+            $.extend(opts, options);
+        }
+        return dialog.modal(opts);
     }
 
+
     function prompt(title, msg, label, button_text, callback) {
+        var input = $('<input/>').attr('id', 'prompt_name');
         var dialogform = $('<div/>').attr('title', msg).append(
             $('<form/>').append(
                 $('<fieldset/>').append(
@@ -104,15 +111,29 @@ define([
                     .attr('for','prompt_name')
                     .text(label)
                 )
-                .append($('<input/>').attr('id', 'prompt_name'))
+                .append(input)
             )
         );
 
         function ok() {
-            callback(dialogform.find('input').val());
+            callback(input.val());
         }
 
-        confirm(title, dialogform, button_text, ok);
+        var d;
+
+        var options = {
+            open: function () {
+                // Upon ENTER, click the OK button.
+                input.keydown(function (event) {
+                    if (event.which === keyboard.keycodes.enter) {
+                        d.find('.btn-primary').first().click();
+                        return false;
+                    }
+                });
+                input.focus();
+            }
+        };
+        d = confirm(title, dialogform, button_text, ok, options);
     }
 
     function pluralize(count_or_array, single_word, plural_word) {
