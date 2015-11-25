@@ -1,6 +1,3 @@
-import io
-import json
-import os
 import requests
 
 from tempfile import NamedTemporaryFile
