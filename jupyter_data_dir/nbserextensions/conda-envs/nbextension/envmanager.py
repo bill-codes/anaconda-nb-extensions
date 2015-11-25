@@ -29,8 +29,8 @@ def pkg_info(s):
 
 # these are the types of environments that can be created
 package_map = {
-    'python2': 'python=2',
-    'python3': 'python=3',
+    'python2': 'python=2 ipykernel',
+    'python3': 'python=3 ipykernel',
     'r':       'r-base r-essentials',
 }
 
