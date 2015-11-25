@@ -88,6 +88,7 @@ define (['jquery'], function($){
       $.ajax(url, {
         cache: false,
         dataType: 'text',
+        type: 'GET',
         success: function(data, status, xhr) {
           callback(data);
         },
@@ -237,7 +238,7 @@ define (['jquery'], function($){
     getuser(function(){
       lockReader(acquireLock);
       lockTriggerSave();
-      module.wnnw = IPython.notification_area.new_notification_widget('wakari')
+      module.wnnw = IPython.notification_area.new_notification_widget('locker')
       // UI
       IPython.toolbar.add_buttons_group([
         {
