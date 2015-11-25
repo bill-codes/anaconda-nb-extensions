@@ -96,15 +96,14 @@ define([
     function new_env_prompt(callback) {
         var input = $('<input id="env_name" name="name"/>');
         var dialogform = $('<div/>').attr('title', 'Create New Environment').append(
-            $('<form/>').append(
+            $('<form class="new_env_form"/>').append(
                 $('<fieldset/>')
                 .append($('<label for="env_name">Name:</label>'))
                 .append(input)
-                .append($('<br>'))
                 .append($('<label for="env_type">Type:</label>'))
                 .append($('<select id="env_type" name="type">' +
                                 '<option value="python2">Python 2</option>' +
-                                '<option value="python3">Python 3</option>' +
+                                '<option selected value="python3">Python 3</option>' +
                                 '<option value="r">R</option>' +
                            '</select>'))
             )
