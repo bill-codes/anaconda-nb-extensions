@@ -1,12 +1,12 @@
 /**
  ----------------------------------------------------------------------------
- * Copyright (c) 2014 - Continuum Analytics
+ * Copyright (c) 2014-2015 - Continuum Analytics
  *
- * A permissive locking extension for wakari-app-ipython
+ * A permissive locking extension for Jupyter notebooks
  ----------------------------------------------------------------------------
  */
 
-define (['nbextensions/utils/main'], function(utils){
+define (['jquery'], function($){
   module = {};
   module.ui_state = 'open';
   /*
@@ -19,26 +19,31 @@ define (['nbextensions/utils/main'], function(utils){
    * Functions *
    *************/
 
-  var getpath = utils.getpath;
-  var getuser = utils.getuser;
-  var execute = utils.execute;
   var old_save = IPython.notebook.save_notebook.bind(IPython.notebook);
 
   /**
    * Write a hidden lock file in the same path where the notebook lives.
    *
-   * @params (string) user The user holding the lock.
-   * @params (function) fn The callback to hold the notebook path.
+   * @params (function) fn The callback to call once the lock file is written..
    */
   function lockWriter(user, fn) {
-    var pwd = sessionStorage.getItem("pwd");
-    var command = "import os;" +
-      "lock_target = os.path.join('" + pwd + "', '." + IPython.notebook.notebook_name + ".lock');" +
-      "f = open(lock_target, 'w');" +
-      "f.write('" + user + "');" +
-      "f.close();" +
-      "'success'";
-    execute(command, fn);
+    var url = window.location.origin + '/lock';
+
+    $.ajax(url, {
+      cache: false,
+      dataType: 'text',
+      data: {
+        user: user,
+        path: IPython.notebook.notebook_path
+      },
+      type: 'POST',
+      success: function(data, status, xhr) {
+        fn(data);
+      },
+      error: function(xhr, status, msg) {
+        console.log('ERROR', msg);
+      }
+    });
   }
 
   /**
@@ -47,24 +52,51 @@ define (['nbextensions/utils/main'], function(utils){
    * @params (function) fn The callback to pass the lock file content.
    */
   function lockReader(fn) {
-    function callback(msg) {
-      // if the lock file content can not be read it, then allow the lock procedure
-      fn(msg);
-      console.log("lock content", msg);
+    var url = window.location.origin + '/lock';
+
+    $.ajax(url, {
+      cache: false,
+      dataType: 'text',
+      type: 'GET',
+      data: {
+        path: IPython.notebook.notebook_path
+      },
+      success: function(data, status, xhr) {
+        // if the lock file content can not be read it, then allow the lock procedure
+        fn(data);
+      },
+      error: function(xhr, status, msg) {
+        // means that the lock file does not exist
+        fn("");
+      }
+    });
+  }
+
+  function getuser(fn) {
+    var user = sessionStorage.getItem('user');
+    if (user !== null) {
+      fn(user);
     }
-    function error(msg){
-      // means that the lock file does not exist
-      fn("");
-      console.log("lock content", "");
+    else {
+      function callback(msg) {
+        sessionStorage.setItem('user', msg);
+        fn(msg);
+      }
+
+      var url = window.location.origin + '/whoami';
+
+      $.ajax(url, {
+        cache: false,
+        dataType: 'text',
+        success: function(data, status, xhr) {
+          callback(data);
+        },
+        error: function(xhr, status, msg) {
+          // means that the lock file does not exist
+          console.log('ERROR', msg);
+        }
+      });
     }
-    var pwd = sessionStorage.getItem("pwd");
-    var command = "import os;" +
-      "lock_target = os.path.join('" + pwd + "', '." + IPython.notebook.notebook_name + ".lock');" +
-      "f = open(lock_target);" +
-      "content = f.readline();" +
-      "f.close();" +
-      "content.rstrip();";
-    execute(command, callback, error);
   }
 
   // 3 helper "status" functions to alert the user about the current state
@@ -81,7 +113,7 @@ define (['nbextensions/utils/main'], function(utils){
 
   var _locked_by_another = function(locking_user){
     $('#locking').css('background','#f0ad4e');
-    module.wnnw.warning("LOCKED by " + locking_user +  ", save is DISABLE. " +
+    module.wnnw.warning("LOCKED by " + locking_user +  ", save is DISABLED. " +
                         "Press the LOCK button AGAIN to take it", 5000);
     $('#locking').children().removeClass('fa fa-unlock-alt').addClass('fa fa-lock');
     module.ui_state = 'another';
@@ -202,21 +234,19 @@ define (['nbextensions/utils/main'], function(utils){
   // ping the kernel and save the notebook path and user, finally trigger
   // the lock mechanism.
   var load_ipython_extension = function() {
-    getpath(function(){
-      getuser(function(){
-        lockReader(acquireLock);
-        lockTriggerSave();
-        module.wnnw = IPython.notification_area.new_notification_widget('wakari')
-        // UI
-        IPython.toolbar.add_buttons_group([
-          {
-            'label'   : 'Lock/Check/Unlock',
-            'icon'    : 'fa fa-lock',
-            'callback': function(){ lockReader(lockSwitcher); },
-            'id'      : 'locking'
-          },
-        ]);
-      });
+    getuser(function(){
+      lockReader(acquireLock);
+      lockTriggerSave();
+      module.wnnw = IPython.notification_area.new_notification_widget('wakari')
+      // UI
+      IPython.toolbar.add_buttons_group([
+        {
+          'label'   : 'Lock/Check/Unlock',
+          'icon'    : 'fa fa-lock',
+          'callback': function(){ lockReader(lockSwitcher); },
+          'id'      : 'locking'
+        },
+      ]);
     });
   };
 
