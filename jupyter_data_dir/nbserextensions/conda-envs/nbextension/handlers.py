@@ -68,11 +68,11 @@ class EnvActionHandler(EnvHandler):
             # TODO - some kind of 'check for updates/apply updates' workflow
             raise NotImplementedError
         elif action == 'create':
-            type = self.get_argument('type', default=None)
-            if type not in package_map:
+            env_type = self.get_argument('type', default=None)
+            if env_type not in package_map:
                 raise web.HTTPError(400)
 
-            data = self.env_manager.create_env(env, type)
+            data = self.env_manager.create_env(env, env_type)
         self.finish(json.dumps(data))
 
 
