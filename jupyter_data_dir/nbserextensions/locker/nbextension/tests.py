@@ -9,7 +9,6 @@ from notebook.tests.launchnotebook import NotebookTestBase
 
 import handlers
 
-# run with python -m nose -v tests
 
 class TestLocker(NotebookTestBase):
     @classmethod
