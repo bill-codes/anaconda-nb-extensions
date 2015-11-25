@@ -64,12 +64,10 @@ define (['jquery'], function($){
       success: function(data, status, xhr) {
         // if the lock file content can not be read it, then allow the lock procedure
         fn(data);
-        console.log("lock content", data);
       },
       error: function(xhr, status, msg) {
         // means that the lock file does not exist
         fn("");
-        console.log("lock content", "");
       }
     });
   }
