@@ -27,6 +27,13 @@ def pkg_info(s):
         'build':   build
     }
 
+# these are the types of environments that can be created
+package_map = {
+    'python2': 'python=2',
+    'python3': 'python=3',
+    'r':       'r-base r-essentials',
+}
+
 
 class EnvManager(LoggingConfigurable):
     envs = Dict()
@@ -80,6 +87,11 @@ class EnvManager(LoggingConfigurable):
 
     def clone_env(self, env, name):
         output = self._execute('conda create -y -q --json -n %(name)s --clone %(env)s' % locals())
+        return json.loads(output)
+
+    def create_env(self, env, type):
+        packages = package_map[type];
+        output = self._execute('conda create -y -q --json -n %(env)s %(packages)s' % locals())
         return json.loads(output)
 
     def env_packages(self, env):

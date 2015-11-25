@@ -65,6 +65,16 @@ define([
             installed.load();
         },
 
+        create: function(name, type) {
+            var error_callback = common.MakeErrorCallback('Error Creating Environment', 'An error occurred while creating "' + name + '"');
+
+            function create_success() {
+                // Refresh list of environments since there is a new one
+                environments.load();
+            }
+            conda_env_action({ name: name }, 'create', create_success, error_callback, { type: type });
+        },
+
         clone: function(env, new_name) {
             var error_callback = common.MakeErrorCallback('Error Cloning Environment', 'An error occurred while cloning "' + env.name + '"');
 

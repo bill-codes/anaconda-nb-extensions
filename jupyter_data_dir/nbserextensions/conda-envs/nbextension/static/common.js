@@ -97,8 +97,6 @@ define([
     }
 
     function prompt(title, msg, label, button_text, callback) {
-        var that = this;
-
         var dialogform = $('<div/>').attr('title', msg).append(
             $('<form/>').append(
                 $('<fieldset/>').append(

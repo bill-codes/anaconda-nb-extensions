@@ -93,6 +93,28 @@ define([
 
     var EnvView = Object.create(ListView);
 
+    function new_env_prompt(callback) {
+        var dialogform = $('<div/>').attr('title', 'Create New Environment').append(
+            $('<form/>').append(
+                $('<fieldset/>')
+                .append($('<label for="env_name">Name:</label>'))
+                .append($('<input id="env_name" name="name"/>'))
+                .append($('<label for="env_type">Type:</label>'))
+                .append($('<select id="env_type" name="type">' +
+                                '<option value="python2">Python 2</option>' +
+                                '<option value="python3">Python 3</option>' +
+                                '<option value="r">R</option>' +
+                           '</select>'))
+            )
+        );
+
+        function ok() {
+            callback($('#env_name').val(), $('#env_type').val());
+        }
+
+        common.confirm('New Environment', dialogform, 'Create', ok);
+    }
+
     $.extend(EnvView, {
         selector:   '#environments',
         label:      'Conda environment',
@@ -152,9 +174,12 @@ define([
         },
 
         bindings: {
+            '#new_env': function() {
+                new_env_prompt(models.environments.create);
+            },
             '#refresh_env_list': function() {
                 models.environments.load();
-            }
+            },
         }
     });
 

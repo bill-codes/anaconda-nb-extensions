@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
-from .envmanager import EnvManager
+from .envmanager import EnvManager, package_map
 
 static = os.path.join(os.path.dirname(__file__), 'static')
 
@@ -67,6 +67,12 @@ class EnvActionHandler(EnvHandler):
         elif action == 'update':
             # TODO - some kind of 'check for updates/apply updates' workflow
             raise NotImplementedError
+        elif action == 'create':
+            type = self.get_argument('type', default=None)
+            if type not in package_map:
+                raise web.HTTPError(400)
+
+            data = self.env_manager.create_env(env, type)
         self.finish(json.dumps(data))
 
 
@@ -175,7 +181,7 @@ class SearchHandler(EnvHandler):
 #-----------------------------------------------------------------------------
 
 
-_env_action_regex = r"(?P<action>export|clone|delete)"
+_env_action_regex = r"(?P<action>create|export|clone|delete)"
 _env_regex = r"(?P<env>[^\/]+)" # there is almost no text that is invalid
 
 _pkg_regex = r"(?P<pkg>[^\/]+)"
