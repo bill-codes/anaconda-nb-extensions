@@ -8,6 +8,22 @@ define([
 ], function(IPython, $, utils, common, models) {
     "use strict";
 
+    function action_start(btn) {
+        var $btn = $(btn);
+        $btn.focus();
+
+        var $icon = $btn.find('i');
+        var old_classes = $icon.attr('class');
+        $icon.attr('class', 'fa fa-spinner fa-spin');
+        return old_classes;
+    }
+
+    function action_end(btn, old_classes) {
+        var $btn = $(btn);
+        $btn.blur();
+        $btn.find('i').attr('class', old_classes);
+    }
+
     var ListView = {
         selector:  null,
         model:     null,
@@ -176,10 +192,22 @@ define([
 
         bindings: {
             '#new_env': function() {
-                new_env_prompt(models.environments.create);
+                var btn = this;
+
+                new_env_prompt(function(name, type) {
+                    var btn_state = action_start(btn);
+                    models.environments.create(name, type).then(function() {
+                        action_end(btn, btn_state);
+                    });
+                });
             },
             '#refresh_env_list': function() {
-                models.environments.load();
+                var btn = this;
+                var btn_state = action_start(btn);
+
+                models.environments.load().then(function() {
+                    action_end(btn, btn_state);
+                });
             },
         }
     });
@@ -215,15 +243,26 @@ define([
         },
 
         bindings: {
-            '#refresh_avail_list': function() { models.available.load(); },
+            '#refresh_avail_list': function() {
+                var btn = this;
+                var btn_state = action_start(btn);
+
+                models.available.load().then(function() {
+                    action_end(btn, btn_state);
+                });
+            },
 
             '#install': function() {
+                var btn = this;
                 var msg = 'Are you sure you want to install ' +
                             common.pluralize(models.available.get_selection().length, 'package') +
                             ' into the environment "' + models.environments.selected.name + '" ?';
 
                 common.confirm('Install Packages', msg, 'Install', function() {
-                    models.available.conda_install();
+                    var btn_state = action_start(btn);
+                    models.available.conda_install().then(function() {
+                        action_end(btn, btn_state);
+                    });
                 });
             }
         },
@@ -268,13 +307,26 @@ define([
         },
 
         bindings: {
-            '#refresh_pkg_list': function() { models.installed.load(); },
+            '#refresh_pkg_list': function() {
+                var btn = this;
+                var btn_state = action_start(btn);
+
+                models.installed.load().then(function() {
+                    action_end(btn, btn_state);
+                });
+            },
 
             '#check_update': function() {
-                models.installed.conda_check_updates();
+                var btn = this;
+                var btn_state = action_start(btn);
+
+                models.installed.conda_check_updates().then(function() {
+                    action_end(btn, btn_state);
+                });
             },
 
             '#update_pkgs': function() {
+                var btn = this;
                 var count = models.installed.get_selection().length;
                 var packages = 'ALL packages';
                 if(count > 0) {
@@ -284,11 +336,15 @@ define([
                             ' in the environment "' + models.environments.selected.name + '" ?';
 
                 common.confirm('Update Packages', msg, 'Update', function() {
-                    models.installed.conda_update();
+                    var btn_state = action_start(btn);
+                    models.installed.conda_update().then(function() {
+                        action_end(btn, btn_state);
+                    });
                 });
             },
 
             '#remove_pkgs': function() {
+                var btn = this;
                 var count = models.installed.get_selection().length;
 
                 if(count === 0) {
@@ -299,7 +355,10 @@ define([
                             ' from the environment "' + models.environments.selected.name + '" ?';
 
                 common.confirm('Remove Packages', msg, 'Remove', function() {
-                    models.installed.conda_remove();
+                    var btn_state = action_start(btn);
+                    models.installed.conda_remove().then(function() {
+                        action_end(btn, btn_state);
+                    });
                 });
             }
         },

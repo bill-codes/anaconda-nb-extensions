@@ -55,14 +55,14 @@ define([
             });
 
             var url = utils.url_join_encode(base_url, 'environments');
-            $.ajax(url, settings);
+            return $.ajax(url, settings);
         },
 
         select: function(env) {
             this.selected = env;
 
             // refresh list of packages installed in the selected environment
-            installed.load();
+            return installed.load();
         },
 
         create: function(name, type) {
@@ -72,7 +72,7 @@ define([
                 // Refresh list of environments since there is a new one
                 environments.load();
             }
-            conda_env_action({ name: name }, 'create', create_success, error_callback, { type: type });
+            return conda_env_action({ name: name }, 'create', create_success, error_callback, { type: type });
         },
 
         clone: function(env, new_name) {
@@ -82,7 +82,7 @@ define([
                 // Refresh list of environments since there is a new one
                 environments.load();
             }
-            conda_env_action(env, 'clone', clone_success, error_callback, { name: new_name });
+            return conda_env_action(env, 'clone', clone_success, error_callback, { name: new_name });
         },
 
         remove: function(env) {
@@ -92,7 +92,7 @@ define([
                 // Refresh list of environments since there is a new one
                 environments.load();
             }
-            conda_env_action(env, 'delete', remove_success, error_callback);
+            return conda_env_action(env, 'delete', remove_success, error_callback);
         }
     };
 
@@ -107,7 +107,7 @@ define([
         });
 
         var url = utils.url_join_encode(base_url, 'environments', environments.selected.name, 'packages', action);
-        $.ajax(url, settings);
+        return $.ajax(url, settings);
     }
 
     function conda_env_action(env, action, on_success, on_error, data) {
@@ -121,7 +121,7 @@ define([
         });
 
         var url = utils.url_join_encode(base_url, 'environments', env.name, action);
-        $.ajax(url, settings);
+        return $.ajax(url, settings);
     }
 
     var available = {
@@ -157,7 +157,7 @@ define([
             });
 
             var url = utils.url_path_join(base_url, 'packages', 'available');
-            $.ajax(url, settings);
+            return $.ajax(url, settings);
         },
 
         get_selection: function() {
@@ -194,7 +194,7 @@ define([
                 that.select_none();
                 that.view.refresh(that.packages);
             }
-            conda_package_action(packages, 'install', install_success, error_callback);
+            return conda_package_action(packages, 'install', install_success, error_callback);
         }
     };
 
@@ -206,13 +206,14 @@ define([
 
         load: function() {
             if(environments.selected !== null) {
-                this.conda_list(environments.selected.name);
+                return this.conda_list(environments.selected.name);
             }
             else {
                 // Need an environment in order to display installed packages.
                 this.packages = [];
                 this.by_name = {};
                 this.view.refresh([]);
+                return $.Deferred().resolve();
             }
         },
 
@@ -254,7 +255,7 @@ define([
             });
 
             var url = utils.url_join_encode(base_url, 'environments', query);
-            $.ajax(url, settings);
+            return $.ajax(url, settings);
         },
 
         _update: function(dry_run, handler) {
@@ -281,7 +282,7 @@ define([
             }
 
             var error_callback = common.MakeErrorCallback('Error', msg);
-            conda_package_action(packages, action, handler, error_callback);
+            return conda_package_action(packages, action, handler, error_callback);
         },
 
         conda_check_updates: function() {
@@ -302,7 +303,7 @@ define([
                 that.view.refresh(that.packages);
             }
 
-            this._update(true, handle_response);
+            return this._update(true, handle_response);
         },
 
         conda_update: function() {
@@ -313,7 +314,7 @@ define([
                 that.load();
             }
 
-            this._update(false, handle_response);
+            return this._update(false, handle_response);
         },
 
         conda_remove: function() {
@@ -330,7 +331,7 @@ define([
                 // Refresh list of packages installed in the current environment
                 installed.load();
             }
-            conda_package_action(packages, 'remove', remove_success, error_callback);
+            return conda_package_action(packages, 'remove', remove_success, error_callback);
         }
     };
 
