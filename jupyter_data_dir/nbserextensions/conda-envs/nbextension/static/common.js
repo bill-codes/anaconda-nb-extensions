@@ -83,7 +83,7 @@ define([
         return settings;
     }
 
-    function confirm(title, msg, button_text, callback, options) {
+    function confirm(title, msg, button_text, callback, input) {
         var buttons = { Cancel: {} };
         buttons[button_text] = {
             class: 'btn-danger btn-primary',
@@ -95,10 +95,22 @@ define([
             body: msg,
             buttons: buttons
         };
-        if(options !== undefined) {
-            $.extend(opts, options);
+
+        var d;
+
+        if(input !== undefined) {
+            opts.open = function () {
+                // Upon ENTER, click the OK button.
+                input.keydown(function (event) {
+                    if (event.which === keyboard.keycodes.enter) {
+                        d.find('.btn-primary').first().click();
+                        return false;
+                    }
+                });
+                input.focus();
+            }
         }
-        return dialog.modal(opts);
+        d = dialog.modal(opts);
     }
 
 
@@ -119,21 +131,7 @@ define([
             callback(input.val());
         }
 
-        var d;
-
-        var options = {
-            open: function () {
-                // Upon ENTER, click the OK button.
-                input.keydown(function (event) {
-                    if (event.which === keyboard.keycodes.enter) {
-                        d.find('.btn-primary').first().click();
-                        return false;
-                    }
-                });
-                input.focus();
-            }
-        };
-        d = confirm(title, dialogform, button_text, ok, options);
+        confirm(title, dialogform, button_text, ok, input);
     }
 
     function pluralize(count_or_array, single_word, plural_word) {

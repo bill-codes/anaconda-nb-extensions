@@ -94,11 +94,13 @@ define([
     var EnvView = Object.create(ListView);
 
     function new_env_prompt(callback) {
+        var input = $('<input id="env_name" name="name"/>');
         var dialogform = $('<div/>').attr('title', 'Create New Environment').append(
             $('<form/>').append(
                 $('<fieldset/>')
                 .append($('<label for="env_name">Name:</label>'))
-                .append($('<input id="env_name" name="name"/>'))
+                .append(input)
+                .append($('<br>'))
                 .append($('<label for="env_type">Type:</label>'))
                 .append($('<select id="env_type" name="type">' +
                                 '<option value="python2">Python 2</option>' +
@@ -112,7 +114,7 @@ define([
             callback($('#env_name').val(), $('#env_type').val());
         }
 
-        common.confirm('New Environment', dialogform, 'Create', ok);
+        common.confirm('New Environment', dialogform, 'Create', ok, input);
     }
 
     $.extend(EnvView, {
