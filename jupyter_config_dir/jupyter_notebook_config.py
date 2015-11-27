@@ -22,8 +22,6 @@ c.KernelSpecManager.whitelist = kernels
 
 c.NotebookApp.server_extensions.append('ipyparallel.nbextension')
 
-c.NotebookApp.server_extensions.append('conda-envs.nbextension')
-
 from jupyter_core import paths
 from os.path import join
 
