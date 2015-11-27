@@ -11,7 +11,7 @@ requirements:
     - python
   run:
     - python
-    - anaconda-notebook
+    - nbwrapper
 
 source:
   path: ../

@@ -1,5 +1,5 @@
 package:
-  name: wrapper
+  name: nbwrapper
   version: "0.0.1dev"
 
 build:
@@ -9,7 +9,6 @@ build:
 requirements:
   build:
     - python
-    - notebook
   run:
     - python
     - notebook
