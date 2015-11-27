@@ -1,0 +1,17 @@
+package:
+  name: conda_envs
+  version: "0.0.1dev"
+
+requirements:
+  build:
+    - python
+  run:
+    - python
+    - notebook ==4.0.4
+
+source:
+  path: ../
+
+about:
+  home: https://github.com/Anaconda-Server/anaconda-notebook
+  license: TBD
