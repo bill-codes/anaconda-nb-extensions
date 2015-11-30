@@ -1,0 +1,6 @@
+Type: IPython Notebook Extension
+Name: <%= name %>
+Description: TBD
+Link: README.md
+Main: main.js
+Compatibility: 4.x

@@ -1,0 +1,16 @@
+package:
+  name: <%= parameterized %>
+  version: 0.1.0
+
+requirements:
+  build:
+    - python
+  run:
+    - jupyter
+
+source:
+  path: ../
+
+about:
+  home: TBD
+  license: <%= license %>
