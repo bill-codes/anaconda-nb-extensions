@@ -16,7 +16,7 @@ requirements:
     # our wrapper
     - nbwrapper
     # our nbserverextension
-    - conda_envs
+    - condaenvs
     - locker
 
 source:

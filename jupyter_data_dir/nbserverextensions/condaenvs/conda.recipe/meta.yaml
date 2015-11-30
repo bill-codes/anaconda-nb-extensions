@@ -1,5 +1,5 @@
 package:
-  name: conda_envs
+  name: condaenvs
   version: "0.0.1dev"
 
 build:
