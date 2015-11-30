@@ -76,19 +76,9 @@ default_handlers = [
 
 def load_jupyter_server_extension(nbapp):
     """Load the nbserver extension"""
-    windows = sys.platform.startswith('win')
-    install_nbextension(static, destination='locker', symlink=not windows, user=True)
     webapp = nbapp.web_app
-
-    cfgm = nbapp.config_manager
-    cfgm.update('notebook', {
-        'load_extensions': {
-            'locker/main': True,
-        }
-    })
     base_url = webapp.settings['base_url']
     webapp.add_handlers(".*$", [
         (ujoin(base_url, pat), handler)
         for pat, handler in default_handlers
     ])
-
