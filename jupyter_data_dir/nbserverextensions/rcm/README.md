@@ -14,10 +14,10 @@ Supported endpoints are:
     Optionally provide parameters `sha` and `sha2` to get a diff between those revisions.
 * `POST /rcm/commit`: commit the current version. This will always overwrite, never merge.
     Required parameter `message` is the commit message.
-* `POST /rcm/checkout`: check out a speciied revision.
+* `POST /rcm/checkout`: check out a specified revision.
     Required parameter `rev` is the revision (hash) to check out.
 
 Tests for the back-end are in tests.py and can be run with
 ```
-python -m nose -v tests
+PYTHONPATH=./nbextension python -m nose -v tests
 ```
