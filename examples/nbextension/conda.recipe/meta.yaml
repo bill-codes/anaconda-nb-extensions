@@ -1,0 +1,21 @@
+package:
+  name: gist-extension
+  version: "0.1.0"
+
+requirements:
+  build:
+    - funcsigs
+    - pyyaml
+    - python
+  run:
+    - funcsigs
+    - jupyer
+    - pyyaml
+    - python
+
+source:
+  path: ../
+
+about:
+  home: https://github.com/Anaconda-Server/anaconda-notebook
+  license: TBD
