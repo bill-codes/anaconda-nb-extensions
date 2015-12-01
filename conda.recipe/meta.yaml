@@ -18,6 +18,8 @@ requirements:
     # our nbserverextension
     - condaenvs
     - locker
+    - nbpresent
+    - nbbrowserpdf
 
 source:
   path: ../
