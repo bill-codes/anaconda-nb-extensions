@@ -16,7 +16,7 @@ from notebook.utils import url_path_join as ujoin
 from notebook.base.handlers import IPythonHandler
 from notebook.nbextensions import install_nbextension
 
-from . import flatten
+import flatten
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -28,8 +28,7 @@ SHA_LENGTH = 7
 base_dir = os.getcwd()
 
 class GitHandler(IPythonHandler):
-    @staticmethod
-    def rcm_run(cmd, *args, **kw):
+    def rcm_run(self, cmd, *args, **kw):
         cmdline = cmd.split() + list(args)
         log.debug('command: %s', ' '.join(cmdline))
 
@@ -43,25 +42,21 @@ class GitHandler(IPythonHandler):
 
         return output.decode('utf-8')
 
-    def _set_path(self, path):
-        """
-        Change to the directory containing the specified notebook file.
-        The file must exist and be a notebook.
-        """
-
-        if not (path.endswith('.ipynb') and os.path.exists(path)):
-            raise web.HTTPError(404)
-
-        dirname = os.path.dirname(path)
-        os.chdir(os.path.join(base_dir, dirname))
-
     def _init(self, path):
         """
         Create the repo, if needed, using `git init`
         """
 
-        self._set_path(path)
-        if not os.path.exists('.git'):
+        if not (path.endswith('.ipynb') and os.path.exists(path)):
+            raise web.HTTPError(404)
+
+        try:
+            # see if we are in a git working tree
+            self.rcm_run('git rev-parse --git-dir')
+            # we are!
+
+        except CalledProcessError:
+            # we're not
             self.rcm_run('git init')
             self.rcm_run('git commit --allow-empty -m', 'Initial commit')
 
@@ -138,7 +133,7 @@ class GitHandler(IPythonHandler):
                 self.rcm_run('git stash pop')
 
         self.rcm_run('git add', path)
-        self.rcm_run('git commit -m', message)
+        self.rcm_run('git commit  --allow-empty -m', message)
         self.rcm_run('git checkout master')
         self.rcm_run('git merge -X theirs', branch)
         self.rcm_run('git branch -D', branch)
