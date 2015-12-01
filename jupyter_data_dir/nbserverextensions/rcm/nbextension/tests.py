@@ -76,7 +76,6 @@ class TestRCM(NotebookTestBase):
         # commit message and rev should appear in the most recent log entry
         r = self._get('/rcm/log')
         entry = r.text.splitlines()[0]
-        print entry
         self.assertIn(msg, entry)
         self.assertIn(new_rev, entry)
 
