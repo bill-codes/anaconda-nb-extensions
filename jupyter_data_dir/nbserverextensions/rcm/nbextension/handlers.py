@@ -48,7 +48,7 @@ class GitHandler(IPythonHandler):
 
         try:
             # see if we are in a git working tree
-            self.rcm_run('git rev-parse --git-dir')
+            self.rcm_run('git rev-parse --is-inside-work-tree')
             # we are!
 
         except CalledProcessError:
@@ -136,6 +136,8 @@ class GitHandler(IPythonHandler):
         """
 
         rev = self.get_argument('rev')
+        branch  = 'ck_%s' % rev
+
         stashed = self.git_stash()
         self.rcm_run('git checkout', rev, '-b', branch)
         if stashed:
