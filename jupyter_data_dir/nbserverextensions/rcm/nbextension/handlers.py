@@ -1,15 +1,11 @@
 # Copyright (c) IPython Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-import json
 import logging
 import os
 import sys
 
-from pkg_resources import parse_version
 from subprocess import check_output, CalledProcessError
-from tempfile import TemporaryFile
-
 from tornado import web
 
 from notebook.utils import url_path_join as ujoin

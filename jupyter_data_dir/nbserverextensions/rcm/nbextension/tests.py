@@ -52,7 +52,7 @@ class TestRCM(NotebookTestBase):
 
     def test_log(self):
         """
-        Basic first test of the /rcm/revision endpoint
+        Basic first test of the /rcm/log endpoint
         """
         r = self._get('/rcm/log')
         self.assertEqual(r.status_code, 200)
@@ -63,6 +63,9 @@ class TestRCM(NotebookTestBase):
 
 
     def test_commit(self):
+        """
+        Perform a commit and verify revision and log change appropriately
+        """
         old_rev = self._get('/rcm/revision').text
 
         msg = 'My commit message'
@@ -81,7 +84,9 @@ class TestRCM(NotebookTestBase):
 
 
     def test_bad_get(self):
-        # try to GET from POST-only endpoints
+        """
+        Try to GET from POST-only endpoints
+        """
         r = self._get('/rcm/commit', message='commit message')
         self.assertEqual(r.status_code, 405)
 
@@ -90,12 +95,18 @@ class TestRCM(NotebookTestBase):
 
 
     def test_non_notebook(self):
+        """
+        Provide a path that is not an .ipynb file
+        """
         path = os.path.join(temp_dir, 'not_a_notebook.txt')
         r = self._get('/rcm/revision', path=path)
         self.assertEqual(r.status_code, 404)
 
 
     def test_nonexistent(self):
+        """
+        Provide a path that does not exist
+        """
         path = os.path.join(temp_dir, '__nonexistent_file__.ipynb')
         r = self._get('/rcm/revision', path=path)
         self.assertEqual(r.status_code, 404)
