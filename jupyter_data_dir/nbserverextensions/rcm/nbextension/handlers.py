@@ -61,7 +61,7 @@ class GitHandler(IPythonHandler):
             self.rcm_run('git commit --allow-empty -m', 'Initial commit')
 
 
-    def rcm_revision(self):
+    def rcm_revision(self, path):
         """
         Return the current revision's SHA hash
         """
@@ -69,14 +69,14 @@ class GitHandler(IPythonHandler):
         output = self.rcm_run('git rev-parse HEAD')
         return output[:SHA_LENGTH]
 
-    def rcm_log(self):
+    def rcm_log(self, path):
         """
         Return the revision history for the repo.
         """
-        return self.rcm_run('git log master --graph', '--pretty=format:%h - %an, %ar : %s')
+        return self.rcm_run('git log master --graph', '--pretty=format:%h - %an, %ar : %s', '--', path)
 
 
-    def rcm_diff(self):
+    def rcm_diff(self, path):
         sha1 = self.get_argument('sha1', default=None)
         sha2 = self.get_argument('sha2', default=None)
 
@@ -88,7 +88,7 @@ class GitHandler(IPythonHandler):
         else:
             raise web.HTTPError(400)
 
-        rawdiff = self.rcm_run('git diff %s --no-prefix -U1000' % points)
+        rawdiff = self.rcm_run('git diff %s --no-prefix -U1000 --' % points, path)
         flat_diff = flatten.diff(rawdiff.splitlines())
         return flat_diff
 
@@ -103,17 +103,16 @@ class GitHandler(IPythonHandler):
         return 'No local changes to save' not in output
 
 
-    def rcm_commit(self):
+    def rcm_commit(self, path):
         """
         Create a new commit on top of master containing the current notebook file,
         without merging. This is done by creating a new branch (if needed) and
         then merging it into master with `git merge -X theirs`.
         """
 
-        path    = self.get_argument('path')
         message = self.get_argument('message')
 
-        rev     = self.rcm_revision()
+        rev     = self.rcm_revision(path)
         branch  = 'ck_%s' % rev
 
         try:
@@ -135,7 +134,7 @@ class GitHandler(IPythonHandler):
         return 'OK'
 
 
-    def rcm_checkout(self):
+    def rcm_checkout(self, path):
         """
         Checkout the requested revision, discarding any current changes.
         """
@@ -153,7 +152,7 @@ class GitHandler(IPythonHandler):
 
         try:
             self._init(path)
-            output = getattr(self, 'rcm_' + action)()
+            output = getattr(self, 'rcm_' + action)(path)
             self.finish(output)
         except CalledProcessError as exc:
             log.exception('Error in external command')
