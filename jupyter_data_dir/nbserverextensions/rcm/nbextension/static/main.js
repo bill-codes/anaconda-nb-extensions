@@ -70,18 +70,12 @@ define ([
    * @params (string) sha2 the second hash number for another revision point
    */
   function get_diff(sha1, sha2, callback) {
-
-    var post_save = function() {
-      // Remove handler to avoid multiple triggering because the notebook object stays around
-      events.off("notebook_saved.Notebook", post_save);
-      rcm_ajax('GET', '/rcm/diff', { sha1: sha1, sha2: sha2 }, callback);
-    }
-
-
     // Save to prevent seeing no changes when there are actually changes
     // because the ipynb was not saved yet.
-    events.on("notebook_saved.Notebook", post_save);
-    IPython.notebook.save_notebook();
+
+    IPython.notebook.save_notebook().then(function() {
+      rcm_ajax('GET', '/rcm/diff', { sha1: sha1, sha2: sha2 }, callback);
+    });
   }
 
 
@@ -183,10 +177,8 @@ define ([
       for (i = 0; i < slog.length; i++) {
         var n = slog[i].indexOf("-")
         var ssha = slog[i].substring(n-8, n);
-        //var ssha = slog[i].substring(0,7);
         var step;
         if (ssha !== "") {
-          //slog[i] = slog[i].replace(" ", "&nbsp&nbsp");
           step = '<input type=\"checkbox\" value=' + ssha + ' class=\"chk\">&nbsp' + slog[i] + '<br>';
         } else {
           slog[i] = slog[i].split("\\\\").join("\\");
@@ -224,7 +216,7 @@ define ([
     }
 
     function keepOldsha(sha) {
-      oldsha = sha.substring(0,7);
+      oldsha = sha;
     }
 
     get_revision(keepOldsha);
@@ -234,10 +226,7 @@ define ([
       if (empty === false) {
         getchkValue();
         if (logsha !== undefined) {
-          IPython.notebook.save_notebook();
-          // WE is slow to save, so we need to delay the nexts step after saving
-          // so the diff actually get something
-          events.on("notebook_saved.Notebook", function () {
+          IPython.notebook.save_notebook().then(function() {
             checkout(logsha, function() {
 
               // we need to delete the current checkpoint to avoid loading of the checkpoint

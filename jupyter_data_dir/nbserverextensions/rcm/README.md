@@ -11,7 +11,7 @@ Supported endpoints are:
 * `GET /rcm/revision`: get the current revision string (SHA hash)
 * `GET /rcm/log`: get the revision history
 * `GET /rcm/diff`: get a flattened diff of the notebook JSON.
-    Optionally provide parameters `sha` and `sha2` to get a diff between those revisions.
+    Optionally provide parameters `sha1` and `sha2` to get a diff between those revisions.
 * `POST /rcm/commit`: commit the current version. This will always overwrite, never merge.
     Required parameter `message` is the commit message.
 * `POST /rcm/checkout`: check out a specified revision.
