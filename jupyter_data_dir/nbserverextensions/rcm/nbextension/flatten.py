@@ -1,3 +1,5 @@
+import re
+
 from nbformat.v4 import reads_json
 from IPython.utils.text import strip_ansi
 
@@ -30,7 +32,7 @@ def flatten(ipynb):
                         if 'text/plain' in output.data:
                             raw_text = output.data['text/plain']
 
-                            if raw_text.endswith(' object>'):
+                            if re.match('<IPython.* object>', raw_text):
                                 # For example, "<IPython.core.display.HTML object>"
                                 content.append(placeholder)
                             else:
