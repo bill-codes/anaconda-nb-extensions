@@ -82,7 +82,7 @@ class GitHandler(IPythonHandler):
 
         # Must supply start and end revision, or neither
         if sha1 and sha2:
-            points = sha1 + '..' + sha2
+            points = sha2 + '..' + sha1
         elif not sha1 and not sha2:
             points = ''
         else:
