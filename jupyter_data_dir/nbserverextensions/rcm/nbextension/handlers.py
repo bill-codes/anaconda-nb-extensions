@@ -66,11 +66,8 @@ class GitHandler(IPythonHandler):
         Return the current revision's SHA hash
         """
 
-        try:
-            output = self.rcm_run('git rev-parse HEAD')
-            return output[:SHA_LENGTH]
-        except CalledProcessError:
-            return 'initial_commit'
+        output = self.rcm_run('git rev-parse HEAD')
+        return output[:SHA_LENGTH]
 
     def rcm_log(self):
         """
@@ -92,9 +89,7 @@ class GitHandler(IPythonHandler):
             raise web.HTTPError(400)
 
         rawdiff = self.rcm_run('git diff %s --no-prefix -U1000' % points)
-        log.debug('raw diff: %s', rawdiff)
         flat_diff = flatten.diff(rawdiff.splitlines())
-        log.debug('flat diff: %s', flat_diff)
         return flat_diff
 
 
@@ -196,7 +191,7 @@ default_handlers = [
 
 def load_jupyter_server_extension(nbapp):
     """Load the nbserver extension"""
-    log.debug('loading RCM extension')
+    log.info('loading RCM extension')
 
     windows = sys.platform.startswith('win')
     install_nbextension(static, destination='rcm', symlink=not windows, user=True)
