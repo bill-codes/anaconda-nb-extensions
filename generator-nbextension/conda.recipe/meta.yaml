@@ -1,11 +1,10 @@
 package:
-  name: <%= parameterized %>
+  name: hello
   version: 0.1.0
 
 requirements:
   build:
     - python
-    - notebook
   run:
     - jupyter
 
@@ -13,5 +12,5 @@ source:
   path: ../
 
 about:
-  home: <%= url %>
-  license: <%= license %>
+  home: TBD
+  license: MIT

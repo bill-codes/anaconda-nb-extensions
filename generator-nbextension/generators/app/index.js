@@ -16,17 +16,22 @@ module.exports = yeoman.generators.Base.extend({
         name: 'extensionName',
         message: 'What is your extension\'s name ?'
     },{
+        name: 'extensionURL',
+        message: 'What is your extension\'s URL ?'
+    },{
         name: 'extensionLicense',
         message: 'What is your extension\'s license ?',
         default: 'TBD'
     }];
 
     this.prompt(prompts, function (props) {
-      this.extensionName = props.extensionName;
+      this.extensionName    = props.extensionName;
+      this.extensionURL     = props.extensionURL;
       this.extensionParameterized = parameterize(props.extensionName);
       this.extensionLicense = props.extensionLicense;
       this.context = {
         name: this.extensionName,
+        url: this.extensionURL,
         parameterized: this.extensionParameterized,
         license: this.extensionLicense
       }

@@ -1,4 +1,4 @@
-# generator-nbextension
+#conda_envs.nbextension generator-nbextension
 > Create your own nbextensions
 
 ## Installation
@@ -9,12 +9,15 @@ First, install [Yeoman](http://yeoman.io) and generator-nbextension using
 
 ```bash
 npm install -g yo
-npm install -g generator-nbextension
+npm install gulp
+npm install -g 
 ```
 
 Then generate your new project:
 
 ```bash
+mkdir hello
+pushd hello
 yo nbextension
 ```
 

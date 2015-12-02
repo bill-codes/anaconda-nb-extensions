@@ -1,4 +1,4 @@
 <%= name %>
 ===========
 
-Generated with [generator-nbextension](http://anaconda.org).
+Generated with [generator-nbextension](<%= url %>).
