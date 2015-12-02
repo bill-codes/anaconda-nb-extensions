@@ -12,7 +12,7 @@ from notebook.utils import url_path_join as ujoin
 from notebook.base.handlers import IPythonHandler
 from notebook.nbextensions import install_nbextension
 
-import flatten
+from flatten import diff
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -85,7 +85,7 @@ class GitHandler(IPythonHandler):
             raise web.HTTPError(400)
 
         rawdiff = self.rcm_run('git diff %s --no-prefix -U1000 --' % points, path)
-        flat_diff = flatten.diff(rawdiff.splitlines())
+        flat_diff = diff(rawdiff.splitlines())
         return flat_diff
 
 

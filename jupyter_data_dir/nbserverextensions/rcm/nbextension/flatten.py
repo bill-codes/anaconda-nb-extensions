@@ -86,5 +86,3 @@ def diff(raw_diff):
     str_d = str("\n".join(d))
 
     return str_d
-
-print("done")
