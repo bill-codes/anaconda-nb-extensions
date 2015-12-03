@@ -1,6 +1,6 @@
 package:
   name: anaconda-notebook
-  version: "4.0.6dev"
+  version: "0.0.1dev"
 
 build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
