@@ -196,7 +196,7 @@ define([
 
                 new_env_prompt(function(name, type) {
                     var btn_state = action_start(btn);
-                    models.environments.create(name, type).then(function() {
+                    models.environments.create(name, type).always(function() {
                         action_end(btn, btn_state);
                     });
                 });
@@ -205,7 +205,7 @@ define([
                 var btn = this;
                 var btn_state = action_start(btn);
 
-                models.environments.load().then(function() {
+                models.environments.load().always(function() {
                     action_end(btn, btn_state);
                 });
             },
@@ -247,7 +247,7 @@ define([
                 var btn = this;
                 var btn_state = action_start(btn);
 
-                models.available.load().then(function() {
+                models.available.load().always(function() {
                     action_end(btn, btn_state);
                 });
             },
@@ -260,7 +260,7 @@ define([
 
                 common.confirm('Install Packages', msg, 'Install', function() {
                     var btn_state = action_start(btn);
-                    models.available.conda_install().then(function() {
+                    models.available.conda_install().always(function() {
                         action_end(btn, btn_state);
                     });
                 });
@@ -311,7 +311,7 @@ define([
                 var btn = this;
                 var btn_state = action_start(btn);
 
-                models.installed.load().then(function() {
+                models.installed.load().always(function() {
                     action_end(btn, btn_state);
                 });
             },
@@ -320,7 +320,7 @@ define([
                 var btn = this;
                 var btn_state = action_start(btn);
 
-                models.installed.conda_check_updates().then(function() {
+                models.installed.conda_check_updates().always(function() {
                     action_end(btn, btn_state);
                 });
             },
@@ -337,7 +337,7 @@ define([
 
                 common.confirm('Update Packages', msg, 'Update', function() {
                     var btn_state = action_start(btn);
-                    models.installed.conda_update().then(function() {
+                    models.installed.conda_update().always(function() {
                         action_end(btn, btn_state);
                     });
                 });
@@ -356,7 +356,7 @@ define([
 
                 common.confirm('Remove Packages', msg, 'Remove', function() {
                     var btn_state = action_start(btn);
-                    models.installed.conda_remove().then(function() {
+                    models.installed.conda_remove().always(function() {
                         action_end(btn, btn_state);
                     });
                 });
