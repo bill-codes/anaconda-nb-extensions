@@ -41,7 +41,7 @@ class EnvManager(LoggingConfigurable):
     @staticmethod
     def _execute(cmd, *args):
         cmdline = cmd.split() + list(args)
-        log.debug('command: %s', ' '.join(cmdline))
+        log.info('command: %s', ' '.join(cmdline))
 
         try:
             output = check_output(cmdline)
