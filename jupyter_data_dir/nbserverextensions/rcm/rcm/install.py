@@ -33,7 +33,7 @@ def install(enable=False, **kwargs):
 
     kwargs = {k: v for k, v in kwargs.items() if not (v is None)}
 
-    kwargs["destination"] = "locker"
+    kwargs["destination"] = "rcm"
     install_nbextension(directory, **kwargs)
 
     if enable:
@@ -53,8 +53,8 @@ def install(enable=False, **kwargs):
             cfg.setdefault("NotebookApp", {})
             .setdefault("server_extensions", [])
         )
-        if "locker.nbextension" not in server_extensions:
-            cfg["NotebookApp"]["server_extensions"] += ["locker.nbextension"]
+        if "rcm.nbextension" not in server_extensions:
+            cfg["NotebookApp"]["server_extensions"] += ["rcm.nbextension"]
 
         cm.update("jupyter_notebook_config", cfg)
         print("New config...")
@@ -81,7 +81,7 @@ def install(enable=False, **kwargs):
         cm.update(
             "notebook", {
                 "load_extensions": {
-                    "locker/main": True
+                    "rcm/main": True
                 },
             }
         )
