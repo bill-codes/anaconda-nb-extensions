@@ -12,7 +12,7 @@ from notebook.utils import url_path_join as ujoin
 from notebook.base.handlers import IPythonHandler
 from notebook.nbextensions import install_nbextension
 
-from flatten import diff
+from .flatten import diff
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)

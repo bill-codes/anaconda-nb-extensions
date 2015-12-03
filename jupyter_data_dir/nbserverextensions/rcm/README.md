@@ -19,5 +19,5 @@ Supported endpoints are:
 
 Tests for the back-end are in tests.py and can be run with
 ```
-PYTHONPATH=./nbextension python -m nose -v tests
+python -m nose -v
 ```

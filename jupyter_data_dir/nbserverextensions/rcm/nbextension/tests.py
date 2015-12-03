@@ -8,7 +8,7 @@ from notebook.tests.launchnotebook import NotebookTestBase
 # run test in a temporary directory
 temp_dir = mkdtemp()
 os.chdir(temp_dir)
-import handlers
+from . import handlers
 
 
 class TestRCM(NotebookTestBase):
