@@ -49,13 +49,13 @@ class EnvManager(LoggingConfigurable):
             log.debug('exit code: %s', exc.returncode)
             output = exc.output
 
+        output = output.decode("utf-8")
+
         MAX_LOG_OUTPUT = 6000
         log.debug('output: %s', output[:MAX_LOG_OUTPUT])
 
         if len(output) > MAX_LOG_OUTPUT:
             log.debug('...')
-
-        output = output.decode("utf-8")
 
         # Workaround for conda issue 1883
         # https://github.com/conda/conda/issues/1883
