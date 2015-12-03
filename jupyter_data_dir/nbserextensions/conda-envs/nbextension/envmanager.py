@@ -55,7 +55,15 @@ class EnvManager(LoggingConfigurable):
         if len(output) > MAX_LOG_OUTPUT:
             log.debug('...')
 
-        return output.decode("utf-8")
+        output = output.decode("utf-8")
+
+        # Workaround for conda issue 1883
+        # https://github.com/conda/conda/issues/1883
+        # Detect an unexepected conda progress bar in the first line of output
+        # and remove it
+        lines = output.splitlines()
+        lines = filter(lambda line: not (line.startswith('[') and line.endswith('%')), lines)
+        return '\n'.join(lines)
 
     def list_envs(self):
         """List all environments that conda knows about"""
