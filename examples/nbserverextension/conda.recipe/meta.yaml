@@ -1,0 +1,18 @@
+package:
+  name: hello-world
+  version: "0.1.0"
+
+requirements:
+  build:
+    - python
+    - notebook
+  run:
+    - python
+    - notebook
+
+source:
+  path: ../
+
+about:
+  home: https://github.com/Anaconda-Server/anaconda-notebook
+  license: TBD
