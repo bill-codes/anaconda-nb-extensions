@@ -65,7 +65,17 @@ if 'develop' in sys.argv or any(bdist in sys.argv for bdist in ['bdist_wheel', '
 
 setuptools_args = {}
 
-install_requires = setuptools_args['install_requires'] = []
+REQUIRES = [
+    "notebook",
+    "ipywidgets",
+    "ipyparallel",
+    "jsonpointer"
+]
+
+if sys.version_info[:2] == (2, 7):
+    REQUIRES.append("funcsigs")
+
+install_requires = setuptools_args['install_requires'] = REQUIRES
 
 if 'setuptools' in sys.modules:
     setup_args.update(setuptools_args)
