@@ -1,1 +1,1 @@
-"%PREFIX%\bin\python" setup.py --enable --prefix="%PREFIX%"
+"%PREFIX%\bin\python" install.py --enable --prefix="%PREFIX%"

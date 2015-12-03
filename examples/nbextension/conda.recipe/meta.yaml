@@ -5,12 +5,10 @@ package:
 requirements:
   build:
     - funcsigs
-    - pyyaml
     - python
   run:
     - funcsigs
-    - jupyer
-    - pyyaml
+    - notebook
     - python
 
 source:
