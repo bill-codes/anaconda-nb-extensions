@@ -74,7 +74,7 @@ def write_kernel(content, directory):
 
 def add_auto_kernel():
     name = 'auto'
-    executable = join(sys.prefix, 'bin', 'kernel_wrapper.py')
+    executable = join(sys.prefix, 'bin', 'kernel-wrapper')
     content = CONTENT_TEMPLATE % (name, name, executable)
     envs_dir = os.path.join(kernels_dir, name)
     return write_kernel(content, envs_dir)
