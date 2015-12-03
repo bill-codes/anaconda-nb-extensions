@@ -22,22 +22,25 @@ class TestRCM(NotebookTestBase):
         cls.notebook_path = cls.notebook_file.name
 
 
-    def _get(self, url, **kw):
+    def _get(self, url, expect_code=200, **kw):
         url = url_path_join(self.base_url(), url)
         data = {
             'path': self.notebook_path
         }
         data.update(kw)
-        return requests.get(url, data=data)
+        r = requests.get(url, data=data)
+        self.assertEqual(r.status_code, expect_code)
+        return r
 
-
-    def _post(self, url, **kw):
+    def _post(self, url, expect_code=200, **kw):
         url = url_path_join(self.base_url(), url)
         data = {
             'path': self.notebook_path
         }
         data.update(kw)
-        return requests.post(url, data=data)
+        r = requests.post(url, data=data)
+        self.assertEqual(r.status_code, expect_code)
+        return r
 
 
     def test_revision(self):
@@ -45,7 +48,6 @@ class TestRCM(NotebookTestBase):
         Basic first test of the /rcm/revision endpoint
         """
         r = self._get('/rcm/revision')
-        self.assertEqual(r.status_code, 200)
         self.assertTrue(len(r.text) == handlers.SHA_LENGTH)
         self.assertTrue(r.text.isalnum())
 
@@ -55,7 +57,7 @@ class TestRCM(NotebookTestBase):
         Basic first test of the /rcm/log endpoint
         """
         r = self._get('/rcm/log')
-        self.assertEqual(r.status_code, 200)
+
         for line in r.text.splitlines():
             # each line starts with '* ' and the commit hash
             self.assertTrue(line.startswith('* '))
@@ -70,7 +72,6 @@ class TestRCM(NotebookTestBase):
 
         msg = 'My commit message'
         r = self._post('/rcm/commit', message=msg)
-        self.assertEqual(r.status_code, 200)
 
         # commit should create a new revision
         new_rev = self._get('/rcm/revision').text
@@ -82,16 +83,23 @@ class TestRCM(NotebookTestBase):
         self.assertIn(msg, entry)
         self.assertIn(new_rev, entry)
 
+        # make another commit
+        r = self._post('/rcm/commit', message='Second commit')
+
+        # now do a checkout of the previous revision
+        self._post('/rcm/checkout', rev=new_rev)
+
+        # and make sure it worked
+        current_rev = self._get('/rcm/revision').text
+        self.assertEqual(current_rev, new_rev)
+
 
     def test_bad_get(self):
         """
         Try to GET from POST-only endpoints
         """
-        r = self._get('/rcm/commit', message='commit message')
-        self.assertEqual(r.status_code, 405)
-
-        r = self._get('/rcm/checkout', rev='abcd123')
-        self.assertEqual(r.status_code, 405)
+        r = self._get('/rcm/commit',   expect_code=405, message='commit message')
+        r = self._get('/rcm/checkout', expect_code=405, rev='abcd123')
 
 
     def test_non_notebook(self):
@@ -99,8 +107,7 @@ class TestRCM(NotebookTestBase):
         Provide a path that is not an .ipynb file
         """
         path = os.path.join(temp_dir, 'not_a_notebook.txt')
-        r = self._get('/rcm/revision', path=path)
-        self.assertEqual(r.status_code, 404)
+        r = self._get('/rcm/revision', expect_code=404, path=path)
 
 
     def test_nonexistent(self):
@@ -108,5 +115,4 @@ class TestRCM(NotebookTestBase):
         Provide a path that does not exist
         """
         path = os.path.join(temp_dir, '__nonexistent_file__.ipynb')
-        r = self._get('/rcm/revision', path=path)
-        self.assertEqual(r.status_code, 404)
+        r = self._get('/rcm/revision', expect_code=404, path=path)
