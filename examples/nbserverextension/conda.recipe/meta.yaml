@@ -12,6 +12,11 @@ requirements:
   run:
     - python
     - notebook
+  test:
+    - mock
+    - notebook
+    - python
+    - requests
 
 source:
   path: ../

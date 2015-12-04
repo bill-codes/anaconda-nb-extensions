@@ -8,11 +8,6 @@ class HelloWorldHandler(IPythonHandler):
 
 
 def load_jupyter_server_extension(nb_app):
-    '''
-    Register a hello world handler.
-
-    Based on https://github.com/Carreau/jupyter-book/blob/master/extensions/server_ext.py
-    '''
     web_app = nb_app.web_app
     host_pattern = '.*$'
     route_pattern = url_path_join(web_app.settings['base_url'], '/hello')
