@@ -291,8 +291,9 @@ define ([
         cancelButton,
         generateOkButton(function() {
           var commit_msg = $.trim($(textarea).val());
-          IPython.notebook.save_notebook();
-          commit(commit_msg);
+          IPython.notebook.save_notebook().then(function() {
+            commit(commit_msg);
+          });
         }, 'Commit')
       ),
       keyboard_manager: IPython.keyboard_manager
