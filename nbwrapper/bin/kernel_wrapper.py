@@ -15,6 +15,4 @@ def main(executable):
     p.wait()
 
 if __name__ == '__main__':
-    # Entry point for wakari if we decide to have the anaconda notebook
-    # into the next WE release 
     main(sys.executable)

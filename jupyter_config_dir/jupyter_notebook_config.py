@@ -9,7 +9,7 @@ c = get_config()
 # The name of the default kernel to start
 c.MappingKernelManager.default_kernel_name = 'auto'
 
-# Remove native kernel from wakari-compute
+# Remove native kernel
 from jupyter_client import kernelspec
 kernels = set(kernelspec.find_kernel_specs().keys())
 
@@ -21,8 +21,6 @@ except KeyError as e:
 c.KernelSpecManager.whitelist = kernels
 
 c.NotebookApp.server_extensions.append('ipyparallel.nbextension')
-
-c.NotebookApp.server_extensions.append('conda-envs.nbextension')
 
 from jupyter_core import paths
 from os.path import join

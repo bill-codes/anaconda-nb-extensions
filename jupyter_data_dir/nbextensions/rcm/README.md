@@ -122,15 +122,12 @@ present the result to the user in a codemirror instance.
 
 Configuration as standalone nbextension.
 
-The RCM extension can be used outside wakari as an standalone nbextension.
+The RCM extension can be used as an standalone nbextension.
 To use it (and test it) you will need:
 
 * the rcm extension, living here as a PR for now, and also the utils extension:
 
-https://github.com/ContinuumIO/wakari-app-ipython/tree/feature/rcm/config/ipython_dir/nbextensions
-
-* IPython master at this specific sha commit (which is representing the IPython
-version currently deployed in Wakari Enterprise 0.5): 26753f5
+https://github.com/Anaconda-Server/anaconda-notebook
 
 * Inside your .ipython folder you will find a nbextension folder, you need to
 drop the rcm and utils folders (containing the js extension and some other additional

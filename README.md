@@ -13,3 +13,38 @@ To manually build the package, you should run:
 To install it:
 
 `conda install -c anaconda-notebook --use-local anaconda-notebook`
+
+To get the latest development packages you can use:
+
+`conda install -c anaconda-notebook -c anaconda-notebook/channel/dev anaconda-notebook`
+
+NOTE:
+
+This package install everything inside prefix. It means it will be completely
+isolated. The  `JUPYTER_CONFIG_DIR` lives in `<prefix>/etc/jupyter` (or the
+equivalent path for osx and win), whereas the `JUPYTER_DATA_DIR` lives in
+`<prefix>/share/jupyter` (or the equivalent path for osx and win).
+So, to have all the extensions available inside an specific conda environment,
+you should install the `anaconda-notebook` package in that environment.
+Alternative, you can start the `anaconda-notebook` in any environment and
+execute python command in other environment just changing the kernel and selecting
+the desired environment. In this case, the notebook server lives in the first
+environment (where you started the `anaconda-notebook`), but the kernel lives in
+the environment you choose from the kernel menu.
+
+DEVS:
+
+* We have several nbserverextension living in this repo, you should build them
+and upload them to anaconda.org/anaconda-notebook if you modify some of them.
+
+To build them just run:
+
+`conda build jupyter_data_dir/nbserverextension/condaenvs/conda.recipe`
+
+`conda build jupyter_data_dir/nbserverextension/condaenvs/conda.recipe`
+
+And to upload them to the `dev` channel:
+
+`anaconda upload -u anaconda-notebook -dev path/to/the/package`
+
+NOTE: We probably need to port this ones to their own repos...
