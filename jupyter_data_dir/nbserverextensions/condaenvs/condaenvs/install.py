@@ -86,6 +86,14 @@ def install(enable=False, **kwargs):
             }
         )
 
+        cm.update(
+            "notebook", {
+                "load_extensions": {
+                    'condaenvs/notebook': True
+                },
+            }
+        )
+
 
 if __name__ == '__main__':
     from notebook.nbextensions import install_nbextension

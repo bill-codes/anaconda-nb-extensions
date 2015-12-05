@@ -174,11 +174,16 @@ class SearchHandler(EnvHandler):
         q = self.get_argument('q')
         self.finish(json.dumps(self.env_manager.package_search(q)))
 
+class ServerHandler(EnvHandler):
+
+    @web.authenticated
+    def get(self):
+        self.finish(json.dumps(self.env_manager.get_server_address()))
 
 
-#-----------------------------------------------------------------------------
+# --------------------------------------------------------------------
 # URL to handler mappings
-#-----------------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 
 _env_action_regex = r"(?P<action>create|export|clone|delete)"
