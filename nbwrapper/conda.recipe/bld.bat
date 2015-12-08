@@ -1,10 +1,11 @@
-mkdir                         "%PREFIX%\etc\jupyter"
-xcopy /E jupyter_config_dir\* "%PREFIX%\etc\jupyter"
+"%PYTHON%" setup.py install
+if errorlevel 1 exit 1
 
-mkdir                                            "%PREFIX%\share\jupyter\nbextensions"
-xcopy /E jupyter_data_dir\nbextensions\defaulter "%PREFIX%\share\jupyter\nbextensions"
-xcopy /E jupyter_data_dir\nbextensions\utils     "%PREFIX%\share\jupyter\nbextensions"
-xcopy /E jupyter_data_dir\nbextensions\syncer    "%PREFIX%\share\jupyter\nbextensions"
+mkdir                            "%PREFIX%\etc\jupyter"
+xcopy /E jupyter_config_dir\*    "%PREFIX%\etc\jupyter"
 
-mkdir       "%PREFIX%\Scripts"
-xcopy bin\* "%PREFIX%\Scripts"
+mkdir                                       "%PREFIX%\share\jupyter\nbextensions"
+xcopy /E jupyter_data_dir\nbextensions\*    "%PREFIX%\share\jupyter\nbextensions"
+
+mkdir          "%PREFIX%\Scripts"
+xcopy bin\*    "%PREFIX%\Scripts"

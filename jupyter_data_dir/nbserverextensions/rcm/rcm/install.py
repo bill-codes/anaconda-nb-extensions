@@ -32,7 +32,7 @@ def install(enable=False, disable=False, **kwargs):
 
     kwargs = {k: v for k, v in kwargs.items() if not (v is None)}
 
-    kwargs["destination"] = "condaenvs"
+    kwargs["destination"] = "rcm"
     install_nbextension(directory, **kwargs)
 
     if enable:
@@ -54,8 +54,8 @@ def install(enable=False, disable=False, **kwargs):
             cfg.setdefault("NotebookApp", {})
             .setdefault("server_extensions", [])
         )
-        if "condaenvs.nbextension" not in server_extensions:
-            cfg["NotebookApp"]["server_extensions"] += ["condaenvs.nbextension"]
+        if "rcm.nbextension" not in server_extensions:
+            cfg["NotebookApp"]["server_extensions"] += ["rcm.nbextension"]
 
         cm.update("jupyter_notebook_config", cfg)
         print("New config...")
@@ -72,23 +72,15 @@ def install(enable=False, disable=False, **kwargs):
             os.makedirs(cm.config_dir)
 
         cm.update(
-            "tree", {
-                "load_extensions": {
-                    'condaenvs/main': True
-                },
-            }
-        )
-
-        cm.update(
             "notebook", {
                 "load_extensions": {
-                    'condaenvs/notebook': True
+                    "rcm/main": True
                 },
             }
         )
 
         print("New config...")
-        pprint(cm.get("tree"))
+        pprint(cm.get("notebook"))
 
     if disable:
         if "prefix" in kwargs:
@@ -104,8 +96,8 @@ def install(enable=False, disable=False, **kwargs):
 
         server_extensions = cfg["NotebookApp"]["server_extensions"]
 
-        if "condaenvs.nbextension" in server_extensions:
-            server_extensions.remove("condaenvs.nbextension")
+        if "rcm.nbextension" in server_extensions:
+            server_extensions.remove("rcm.nbextension")
 
         cm.update("jupyter_notebook_config", cfg)
         print("New config...")
@@ -117,18 +109,18 @@ def install(enable=False, disable=False, **kwargs):
             cm.config_dir
         )
 
-        cfg = cm.get("tree")
+        cfg = cm.get("notebook")
         print("Existing config...")
         pprint(cfg)
 
         nb_extensions = list(cfg["load_extensions"].keys())
 
-        if "condaenvs/main" in nb_extensions:
-            cfg["load_extensions"].pop("condaenvs/main")
+        if "rcm/main" in nb_extensions:
+            cfg["load_extensions"].pop("rcm/main")
 
-        cm.set("tree", cfg)
+        cm.set("notebook", cfg)
         print("New config...")
-        pprint(cm.get("tree"))
+        pprint(cm.get("notebook"))
 
 
 if __name__ == '__main__':

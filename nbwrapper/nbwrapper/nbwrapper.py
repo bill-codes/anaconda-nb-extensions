@@ -17,7 +17,7 @@ def main(jupyter_config_dir, jupyter_data_dir):
     # HACK to make read jupyter_config_dir from env because right now the frontend
     # config could be only loaded from the user space
     os.environ["JUPYTER_CONFIG_DIR"] = jupyter_config_dir
-    os.environ["JUPYTER_DATA_DIR"] = jupyter_data_dir
+    os.environ["JUPYTER_DATA_DIR"]   = jupyter_data_dir
 
     # NOTE: all the config and data files (extensions) are copied by the conda recipe
     # TODO: use config manager to load the extension

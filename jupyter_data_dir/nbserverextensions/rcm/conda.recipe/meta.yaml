@@ -1,5 +1,5 @@
 package:
-  name: nbwrapper
+  name: rcm
   version: "0.0.1dev"
 
 build:
@@ -11,12 +11,7 @@ requirements:
     - python
   run:
     - python
-    - funcsigs        [py27]
-    - notebook
-    - ipywidgets
-    - ipyparallel
-    - pandoc
-    - jsonpointer
+    - nbwrapper
 
 source:
   path: ../
