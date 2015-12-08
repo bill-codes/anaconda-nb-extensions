@@ -60,3 +60,13 @@ label {
 .new_env_form input {
     margin-right: 15px;
 }
+
+div.loading {
+    width: 100%;
+    text-align: center;
+    padding-top: 20px;
+}
+
+.modal .modal-dialog.modal-lg {
+    width: 900px;
+}

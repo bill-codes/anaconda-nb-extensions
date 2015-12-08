@@ -79,6 +79,14 @@ def install(enable=False, disable=False, **kwargs):
             }
         )
 
+        cm.update(
+            "notebook", {
+                "load_extensions": {
+                    'condaenvs/notebook': True
+                },
+            }
+        )
+
         print("New config...")
         pprint(cm.get("tree"))
 
