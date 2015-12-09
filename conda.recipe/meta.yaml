@@ -1,18 +1,24 @@
 package:
   name: anaconda-notebook
-  version: "4.0.4"
+  version: "0.0.1dev"
+
+build:
+  number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
+  string: py{{ environ.get('PY_VER').replace('.', '') }}_{{ environ.get('GIT_BUILD_STR', '0') }}
 
 requirements:
   build:
     - python
-    - notebook ==4.0.4
   run:
     - python
-    - notebook ==4.0.4
-    - ipywidgets
-    - ipyparallel
-    - pandoc
-    - jsonpointer
+    # fine control of the notebook version
+    - notebook ==4.0.6
+    # our wrapper
+    - nbwrapper
+    # our nbserverextension
+    - condaenvs
+    - nbpresent
+    - nbbrowserpdf
 
 source:
   path: ../

@@ -60,20 +60,7 @@ define(
           fn(pwd);
           console.log("path: ", pwd);
         };
-        var proj_home_callback = function(pwd){
-          if (pwd.indexOf("__NOWAKARIPATH__") >= 0){
-            module.execute("import os as _os; _os.getcwd()", pwd_callback);
-          }else{
-            pwd_callback(pwd);
-          }
-        };
-        var nb_path = IPython.notebook.notebook_path;
-        var pre_path = nb_path.substring(0, nb_path.lastIndexOf("/"));
-        proj_home_command = "import os as _os;" +
-          "_proj_home = _os.environ.get('WAKARI_PROJECT_HOME', '__NOWAKARIPATH__');" +
-          "_os.path.join(_proj_home, '" + pre_path + "')";
-        module.execute(proj_home_command, proj_home_callback);
-
+        pwd_callback(pwd);
       }
     };
     module.getuser = function(fn){

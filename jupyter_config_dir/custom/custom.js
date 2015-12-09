@@ -1,7 +1,3 @@
-/**
- * Wakari custom javascript
- */
-
 // we want strict javascript that fails on ambiguous syntax
 "using strict";
 
@@ -12,7 +8,5 @@ define(["base/js/utils", "base/js/events"], function (utils, events) {
     });
     events.one("kernel_ready.Kernel", function () {
       utils.load_extensions('syncer/main');
-      utils.load_extensions('locker/main');
-      utils.load_extensions('rcm/main');
     });
 });
