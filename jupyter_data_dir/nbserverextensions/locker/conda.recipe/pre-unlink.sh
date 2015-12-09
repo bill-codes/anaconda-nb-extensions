@@ -1,1 +1,1 @@
-"${PREFIX}/bin/python" -m locker.install --disable --prefix="${PREFIX}"
+"${PREFIX}/bin/python" -m locker.setup remove --prefix "${PREFIX}"
