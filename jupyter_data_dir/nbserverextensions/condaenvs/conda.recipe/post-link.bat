@@ -1,1 +1,1 @@
-"%PREFIX%/bin/python" -m condaenvs.install --enable --prefix="%PREFIX%"
+"%PREFIX%/bin/python" -m condaenvs.setup install --enable --prefix="%PREFIX%"
