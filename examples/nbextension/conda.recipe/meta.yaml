@@ -1,0 +1,19 @@
+package:
+  name: gist-extension
+  version: "0.1.0"
+
+requirements:
+  build:
+    - funcsigs
+    - python
+  run:
+    - funcsigs
+    - notebook
+    - python
+
+source:
+  path: ../
+
+about:
+  home: https://github.com/Anaconda-Server/anaconda-notebook
+  license: TBD
