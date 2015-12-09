@@ -30,6 +30,12 @@ def mkdir_p(path):
 
 
 class NBSetup(object):
+    extensions_map = {
+        'notebook': 'main.js',
+        'tree': 'tree.js',
+        'edit': 'edit.js'
+    }
+
     def __init__(self, name, **kwargs):
         self.name = name
         self.prefix = kwargs.get('prefix', None)
@@ -38,7 +44,8 @@ class NBSetup(object):
             self.path = jupyter_config_dir()
         else:
             self.path = join(self.prefix, "etc", "jupyter")
-        self.cm = ConfigManager(config_dir=self.path)
+        self.cm = ConfigManager(config_dir=join(self.path, 'nbconfig'))
+        self.cm_server = ConfigManager(config_dir=self.path)
 
     def install(self):
         """
@@ -67,24 +74,25 @@ class NBSetup(object):
         self._disable_server_extension()
 
     def _disable_client_extension(self):
-        for _type in ['notebook', 'tree', 'edit']:
+        for _type, filename in self.extensions_map.iteritems():
             cfg = self.cm.get(_type)
             try:
-                nb_key = "{}/{}".format(self.name, _type)
+                nb_key = "{}/{}".format(self.name, filename[:-3])
                 nb_extensions = list(cfg['load_extensions'].keys())
                 if nb_key in nb_extensions:
                     cfg['load_extensions'].pop(nb_key)
+                    self.cm.set(_type, cfg)
                     self._echo("Disabling {} as {}".format(self.name, _type), 'ok')
             except KeyError:
                 self._echo("{} wasn't enabled as a {}. Nothing to do.".format(self.name, _type))
 
     def _disable_server_extension(self):
-        cfg = self.cm.get("jupyter_notebook_config")
+        cfg = self.cm_server.get("jupyter_notebook_config")
         try:
             server_extensions = cfg["NotebookApp"]["server_extensions"]
-            if "condaenvs.nbextension" in server_extensions:
-                server_extensions.remove("condaenvs.nbextension")
-            self.cm.update("jupyter_notebook_config", cfg)
+            if "{}.nbextension".format(self.name) in server_extensions:
+                server_extensions.remove("{}.nbextension".format(self.name))
+            self.cm_server.update("jupyter_notebook_config", cfg)
             self._echo("{} was disabled as a server extension".format(self.name), 'ok')
         except KeyError:
             self._echo("{} was't enabled as a server extension. Nothing to do.".format(self.name))
@@ -111,12 +119,8 @@ class NBSetup(object):
 
     def _enable_client_extensions(self):
         directory = self.kwargs['static']
-        extensions_map = {
-            'notebook': 'main.js',
-            'tree': 'tree.js',
-            'edit': 'edit.js'
-        }
-        for key, filename in extensions_map.iteritems():
+
+        for key, filename in self.extensions_map.iteritems():
             if filename in os.listdir(directory):
                 self.cm.update(
                     key, {
@@ -127,14 +131,14 @@ class NBSetup(object):
                 )
 
     def _enable_server_extensions(self):
-        cfg = self.cm.get("jupyter_notebook_config")
+        cfg = self.cm_server.get("jupyter_notebook_config")
         server_extensions = (
             cfg.setdefault("NotebookApp", {})
             .setdefault("server_extensions", [])
         )
         if "{}.nbextension".format(self.name) not in server_extensions:
             cfg["NotebookApp"]["server_extensions"] += ["{}.nbextension".format(self.name)]
-        self.cm.update("jupyter_notebook_config", cfg)
+        self.cm_server.update("jupyter_notebook_config", cfg)
 
 
 def install_cmd(parser_args, setup_args):
