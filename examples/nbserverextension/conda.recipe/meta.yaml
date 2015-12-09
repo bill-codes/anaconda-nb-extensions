@@ -16,11 +16,16 @@ requirements:
     - nbsetuptools
     - nbwrapper
 
-  test:
+test:
+  requires:
     - mock
     - notebook
     - python
     - requests
+    - nose
+
+  commands:
+    - nosetests -w ${SRC_DIR}
 
 source:
   path: ../
