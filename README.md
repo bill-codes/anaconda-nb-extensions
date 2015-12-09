@@ -32,19 +32,6 @@ the desired environment. In this case, the notebook server lives in the first
 environment (where you started the `anaconda-notebook`), but the kernel lives in
 the environment you choose from the kernel menu.
 
-DEVS:
-
-* We have several nbserverextension living in this repo, you should build them
-and upload them to anaconda.org/anaconda-notebook if you modify some of them.
-
-To build them just run:
-
-`conda build jupyter_data_dir/nbserverextension/condaenvs/conda.recipe`
-
-`conda build jupyter_data_dir/nbserverextension/condaenvs/conda.recipe`
-
 And to upload them to the `dev` channel:
 
 `anaconda upload -u anaconda-notebook -dev path/to/the/package`
-
-NOTE: We probably need to port this ones to their own repos...
