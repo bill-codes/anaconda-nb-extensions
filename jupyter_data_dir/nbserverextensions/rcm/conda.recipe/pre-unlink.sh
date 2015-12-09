@@ -1,1 +1,1 @@
-"${PREFIX}/bin/python" -m rcm.install --disable --prefix="${PREFIX}"
+"${PREFIX}/bin/python" -m rcm.setup remove --prefix "${PREFIX}"

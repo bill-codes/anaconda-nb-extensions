@@ -1,1 +1,1 @@
-"${PREFIX}/bin/python" -m locker.install --enable --prefix="${PREFIX}"
+"${PREFIX}/bin/python" -m locker.setup install --enable --prefix "${PREFIX}"
