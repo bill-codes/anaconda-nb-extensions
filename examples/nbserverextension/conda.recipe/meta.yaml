@@ -9,14 +9,23 @@ requirements:
   build:
     - python
     - notebook
+
   run:
     - python
     - notebook
-  test:
+    - nbsetuptools
+    - nbwrapper
+
+test:
+  requires:
     - mock
     - notebook
     - python
     - requests
+    - nose
+
+  commands:
+    - nosetests -w ${SRC_DIR}
 
 source:
   path: ../
