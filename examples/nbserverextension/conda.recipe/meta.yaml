@@ -9,9 +9,13 @@ requirements:
   build:
     - python
     - notebook
+
   run:
     - python
     - notebook
+    - nbsetuptools
+    - nbwrapper
+
   test:
     - mock
     - notebook
