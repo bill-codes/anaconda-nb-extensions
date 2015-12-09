@@ -189,6 +189,7 @@ default_handlers = [
 def load_jupyter_server_extension(nbapp):
     """Load the nbserver extension"""
     log.info('loading RCM extension')
+    webapp = nbapp.web_app
 
     base_url = webapp.settings['base_url']
     webapp.add_handlers(".*$", [

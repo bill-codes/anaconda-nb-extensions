@@ -1,1 +1,1 @@
-"%PREFIX%/bin/python" -m rcm.install --enable --prefix="%PREFIX%"
+"%PREFIX%/bin/python" -m rcm.setup install --enable --prefix="%PREFIX%"
