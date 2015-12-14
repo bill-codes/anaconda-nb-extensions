@@ -46,7 +46,7 @@ setup_args = dict(
     name            = name,
     version         = version_ns['__version__'],
     packages        = packages,
-    scripts         = ['bin/anaconda-notebook', 'bin/kernel-wrapper'],
+    scripts         = ['bin/anaconda-notebook'],
     #description     = "",
     #long_description= """
     #""",
