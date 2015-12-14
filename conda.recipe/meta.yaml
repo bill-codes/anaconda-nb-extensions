@@ -16,7 +16,7 @@ requirements:
     # our wrapper
     - nbwrapper
     # our nbserverextension
-    - condaenvs
+    - nb_conda
     - nb_conda_kernels
     - nbpresent
     - nbbrowserpdf
