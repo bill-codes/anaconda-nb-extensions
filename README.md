@@ -39,7 +39,7 @@ Jupyter installed.
 for extensions the `anaconda-notebook` wrapper points Jupyter to a directory
 specific to the conda environment to pick up the set of conda-installable
 extensions.  An implication of this is that **all other normally installed
-Jupyter extesions in `~/.jupyter` will not be available*.  Yes, this is
+Jupyter extesions in `~/.jupyter` will not be available**.  Yes, this is
 sub-optimal, and yes we're working on a better way to deal with this (in fact,
 we're aiming to get rid of `anaconda-notebook` altogether).
 
@@ -50,7 +50,7 @@ open a PR if you have some code-change suggestions.
 
 Found a bug? Open an issue.
 
-Support? The (Anaconda mailing list)[https://groups.google.com/a/continuum.io/forum/#!forum/anaconda]
+Support? The [Anaconda mailing list](https://groups.google.com/a/continuum.io/forum/#!forum/anaconda)
 is the best place to go for support-related questions.
 
 ## Developers
