@@ -1,6 +1,6 @@
 package:
   name: nbwrapper
-  version: "0.1.0"
+  version: "0.1.1"
 
 build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
@@ -23,4 +23,4 @@ source:
 
 about:
   home: https://github.com/Anaconda-Server/anaconda-notebook
-  license: MIT
+  license: BSD
