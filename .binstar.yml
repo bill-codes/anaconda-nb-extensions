@@ -18,3 +18,28 @@ script:
   - conda build --quiet conda.recipe
 
 build_targets: conda
+---
+package: nbwrapper
+user: anaconda-notebook
+
+platform:
+  - linux-64
+  - osx-64
+  - win-64
+
+engine:
+  - python=2.7
+  - python=3.4
+  - python=3.5
+
+install:
+  - conda build ./nbwrapper/conda.recipe
+  - conda install -c anaconda-notebook --use-local nbwrapper
+
+test:
+  - anaconda-notebook --help
+
+script:
+  - conda build --no-test ./nbwrapper/conda.recipe
+
+build_targets: conda

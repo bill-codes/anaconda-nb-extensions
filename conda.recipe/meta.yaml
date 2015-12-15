@@ -1,6 +1,6 @@
 package:
   name: anaconda-notebook
-  version: "0.1.0"
+  version: "0.1.1"
 
 build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
@@ -15,7 +15,7 @@ requirements:
     - notebook ==4.0.6
     # our wrapper
     - nbwrapper
-    # our nbserverextension
+    # our standard extension set
     - nb_conda
     - nb_conda_kernels
     - nbpresent
@@ -26,4 +26,4 @@ source:
 
 about:
   home: https://github.com/Anaconda-Server/anaconda-notebook
-  license: TBD
+  license: BSD
