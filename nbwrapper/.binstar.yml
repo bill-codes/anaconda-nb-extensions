@@ -2,12 +2,13 @@ package: nbwrapper
 
 platform:
   - linux-64
+  - linux-32
   - osx-64
-#  - win-64
+  - win-64
+  - win-32
 
 engine:
   - python=2.7
-  - python=3.3
   - python=3.4
   - python=3.5
 
