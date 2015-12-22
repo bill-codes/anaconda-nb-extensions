@@ -1,6 +1,6 @@
 package:
   name: anaconda-notebook
-  version: "0.1.1"
+  version: "0.1.2"
 
 build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
@@ -12,9 +12,7 @@ requirements:
   run:
     - python
     # fine control of the notebook version
-    - notebook ==4.0.6
-    # our wrapper
-    - nbwrapper
+    - notebook >= 4.1
     # our standard extension set
     - nb_conda
     - nb_conda_kernels
