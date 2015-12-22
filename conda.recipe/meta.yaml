@@ -19,6 +19,9 @@ requirements:
     - nb_config_manager
     - nbpresent
     - nbbrowserpdf
+    - ipywidgets
+    - ipyparallel
+    - pandoc
 
 source:
   path: ../
