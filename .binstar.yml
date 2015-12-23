@@ -1,4 +1,4 @@
-package: anaconda-notebook
+package: anaconda-nb-extensions
 user: anaconda-notebook
 
 platform:

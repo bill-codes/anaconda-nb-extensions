@@ -15,5 +15,5 @@ source:
   path: ../
 
 about:
-  home: https://github.com/Anaconda-Server/anaconda-notebook
-  license: TBD
+  home: https://github.com/Anaconda-Server/anaconda-nb-extensions
+  license: BSD
