@@ -11,9 +11,6 @@ requirements:
     - python
   run:
     - python
-    # fine control of the notebook version
-    - notebook >= 4.1
-    # our standard extension set
     - nb_conda
     - nb_conda_kernels
     - nb_config_manager
