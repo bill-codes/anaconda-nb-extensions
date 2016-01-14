@@ -5,7 +5,7 @@
 In its own environment sandbox (recommended):
 
 ```
-conda create -n ananb -c anaconda-notebook anaconda-nb-extensions
+conda create -n ananb -c anaconda-nb-extensions anaconda-nb-extensions
 source activate ananb
 jupyter notebook
 ```
@@ -13,7 +13,7 @@ jupyter notebook
 or if you just want to install it without an environment sandbox:
 
 ```
-conda install -c anaconda-notebook anaconda-nb-extensions
+conda install -c anaconda-nb-extensions anaconda-nb-extensions
 jupyter notebook
 ```
 
@@ -67,12 +67,12 @@ conda build conda.recipe
 Then to install your locally built version:
 
 ```
-conda install -c anaconda-notebook --use-local anaconda-nb-extensions
+conda install -c anaconda-nb-extensions --use-local anaconda-nb-extensions
 ```
 
 To get the latest development packages you can use:
 
-`conda install -c anaconda-notebook -c anaconda-notebook/channel/dev anaconda-nb-extensions`
+`conda install -c anaconda-nb-extensions -c anaconda-nb-extensions/channel/dev anaconda-nb-extensions`
 
 ## How does this work?
 
@@ -90,4 +90,4 @@ the environment you choose from the kernel menu.
 
 And to upload them to the `dev` channel:
 
-`anaconda upload -u anaconda-notebook -dev path/to/the/package`
+`anaconda upload -u anaconda-nb-extensions -dev path/to/the/package`

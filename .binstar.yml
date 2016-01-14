@@ -1,5 +1,5 @@
 package: anaconda-nb-extensions
-user: anaconda-notebook
+user: anaconda-nb-extensions
 
 platform:
   - linux-64
@@ -14,7 +14,7 @@ engine:
   - python=3.5
 
 install:
-  - conda config --add channels anaconda-notebook
+  - conda config --add channels anaconda-nb-extensions
 
 script:
   - conda build --quiet conda.recipe
