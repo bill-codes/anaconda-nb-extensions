@@ -1,5 +1,4 @@
 package: anaconda-nb-extensions
-user: anaconda-nb-extensions
 
 platform:
   - linux-64
