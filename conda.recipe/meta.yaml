@@ -1,6 +1,6 @@
 package:
   name: anaconda-nb-extensions
-  version: "0.1.3"
+  version: "0.1.4"
 
 build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
@@ -13,13 +13,19 @@ requirements:
     - python
     - ipyparallel
     - ipywidgets
+    - pandoc
+    # Our extensions
+    - nb_anaconda_theme
     - nb_anacondacloud
     - nb_conda
+    # nb_conda_kernels is a nb_conda dependency but it also provides the
+    # machinery for kernel-environment on the fly generation
     - nb_conda_kernels
+    # This two could be removed when notebook 4.2 is out because it will have
+    # a native mechanism to read nbconfig from several places and a consistent
+    # API to install the extensions in different places.
     - nb_config_manager
-    - nbpresent
-    - nbbrowserpdf
-    - pandoc
+    - nbsetuptools
 
 source:
   path: ../
