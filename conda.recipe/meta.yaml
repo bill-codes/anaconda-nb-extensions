@@ -1,6 +1,6 @@
 package:
   name: anaconda-nb-extensions
-  version: "0.1.4"
+  version: {{ environ.get('GIT_DESCRIBE_TAG', '')}}
 
 build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
@@ -28,7 +28,7 @@ requirements:
     - nbsetuptools
 
 source:
-  path: ../
+  git_url: ../
 
 about:
   home: https://github.com/Anaconda-Server/anaconda-nb-extensions
