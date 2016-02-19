@@ -27,7 +27,7 @@ requirements:
     - nbsetuptools
 
 source:
-  path: ../
+  git_url: ../
 
 about:
   home: https://github.com/Anaconda-Server/anaconda-nb-extensions
