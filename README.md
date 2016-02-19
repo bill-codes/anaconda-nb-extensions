@@ -23,7 +23,7 @@ jupyter notebook
 
 This package provides a set of Jupyter extensions intended to provide richer Anaconda
 integration with built-in support for conda environments (package sandboxes),
-conda environment/package management, support for sharing notebooks on 
+conda environment/package management, support for sharing notebooks on
 [anaconda.org](http://anaconda.org), and more.
 This bundle of extensions, or any individual extension, can be installed with just `conda install`.
 
@@ -33,11 +33,11 @@ this package.
 
 This is **not** a fork of Jupyter.  It is a set
 of tools and custom configuration of Jupyter that make it
-work in a way that will be beneficial for some users.  You still need 
+work in a way that will be beneficial for some users.  You still need
 Jupyter installed in order to use these extensions.
 
 **NOTE**: This "bundle" is designed to encapsulate a set of extensions into a
-`conda` environment.  It also includes nb_config_manager, which directs Jupyter 
+`conda` environment.  It also includes nb_config_manager, which directs Jupyter
 to look in the current conda environment to pick up the set of conda-installable
 extensions.
 
@@ -74,20 +74,20 @@ To get the latest development packages you can use:
 
 `conda install -c anaconda-nb-extensions -c anaconda-nb-extensions/channel/dev anaconda-nb-extensions`
 
+And to upload them to the `dev` channel:
+
+`anaconda upload -u anaconda-nb-extensions -dev path/to/the/package`
+
 ## How does this work?
 
 This package installs everything inside prefix. It means it will be completely
 isolated. The  `JUPYTER_CONFIG_DIR` lives in `<prefix>/etc/jupyter` (or the
 equivalent path for osx and win), whereas the `JUPYTER_DATA_DIR` lives in
 `<prefix>/share/jupyter` (or the equivalent path for osx and win).
-So, to have all the extensions available inside an specific conda environment,
+So, to have all the extensions available inside a specific conda environment,
 you should install the `anaconda-nb-extensions` package in that environment.
 Alternative, you can start the `jupyter notebook` in any environment and
 execute python command in other environment just changing the kernel and selecting
 the desired environment. In this case, the notebook server lives in the first
 environment (where you started the `jupyter notebook`), but the kernel lives in
 the environment you choose from the kernel menu.
-
-And to upload them to the `dev` channel:
-
-`anaconda upload -u anaconda-nb-extensions -dev path/to/the/package`
