@@ -1,4 +1,17 @@
-# Anaconda Notebook
+# Anaconda Notebook Extensions
+
+## Summary
+This is the list of current active extensions: 
+1. nb_conda - open source - help manage conda envs from inside file viewer of jupter notebook
+2. nb_condakernel - open source - use the kernel-switching dropdown inside notebook UI to switch between conda envs
+3. nb_anacondacloud - open source - publish notebook to your account on Anaconda Cloud
+4. nbpresent - configure notebook to provide a slide-show view (think Powerpoint for Notebooks)
+5. nb_anaconda_theme - ability to provide some basic styling to notebooks
+6. nb_revision_control - Workgroup/Enterprise Subscription - requires token to access - provides basic revision control for notebooks
+7. nb_locker - Workgroup/Enterprise Subscription - requires token to access - provides soft-locking mechanism for shared notebooks
+
+The latest conda-installable packages are available on Anaconda-Cloud: 
+https://anaconda.org/anaconda-nb-extensions
 
 ## Quick Start
 
