@@ -1,106 +1,71 @@
-# Anaconda Notebook Extensions
+# Anaconda Extensions for the Jupyter Notebook
 
-## Summary
-This is the list of current active extensions: 
-1. nb_conda - open source - help manage conda envs from inside file viewer of jupter notebook
-2. nb_condakernel - open source - use the kernel-switching dropdown inside notebook UI to switch between conda envs
-3. nb_anacondacloud - open source - publish notebook to your account on Anaconda Cloud
-4. nbpresent - configure notebook to provide a slide-show view (think Powerpoint for Notebooks)
-5. nb_anaconda_theme - ability to provide some basic styling to notebooks
-6. nb_revision_control - Workgroup/Enterprise Subscription - requires token to access - provides basic revision control for notebooks
-7. nb_locker - Workgroup/Enterprise Subscription - requires token to access - provides soft-locking mechanism for shared notebooks
+## About
+This package integrates the [Jupyter Notebook](http://jupyter.org) with
+[Anaconda](https://www.continuum.io/downloads). With it `conda install`ed, you
+can:
+- create & manage `conda` environments within the Jupyter Notebook web
+  application
+- use R & Python kernels from all your `conda` environments
+- share notebooks on [anaconda.org](http://anaconda.org)
+- create slide-based presentations to show off your data
 
-The latest conda-installable packages are available on Anaconda-Cloud: 
-https://anaconda.org/anaconda-nb-extensions
+This bundle of extensions, or any individual extension, can be installed with
+[`conda install`](http://conda.pydata.org/docs/intro.html).
+
+## The Extensions
+
+### Extensions distributed as Free Software (BSD License):
+- [nb_conda](https://github.com/Anaconda-Platform/nb_conda) - manage conda environments from inside the Jupyter notebook
+- [nb_conda_kernels](https://github.com/Anaconda-Platform/nb_conda_kernels) - launch R and Python kernels from any conda environment
+- [nb_anacondacloud](https://github.com/Anaconda-Platform/nb_anacondacloud) - one-click publishing of  notebooks to Anaconda Cloud (free account required)
+- [nbpresent](https://github.com/Anaconda-Platform/nbpresent) - Create beautiful slides from Jupyter Notebooks
+
+### Extensions requiring a Workgroup/Enterprise Subscription:
+> [Contact Continuum for more info](https://www.continuum.io/contact-us)
+
+- nb_revision_control - provides basic revision control for notebooks
+- nb_locker - soft-locking mechanism for shared notebooks
+
+The latest conda-installable packages are available on
+[Anaconda Cloud](https://anaconda.org/anaconda-nb-extensions).
 
 ## Quick Start
-
-In its own environment sandbox (recommended):
-
 ```
-conda create -n ananb -c anaconda-nb-extensions anaconda-nb-extensions
-source activate ananb
+conda install anaconda-nb-extensions -c anaconda-nb-extensions
 jupyter notebook
 ```
-
-or if you just want to install it without an environment sandbox:
-
-```
-conda install -c anaconda-nb-extensions anaconda-nb-extensions
-jupyter notebook
-```
-
-![Conda tab added to Jupyter file browser](imgs/conda_tab.png?raw=true "Added Conda tab to browser")
-
-## Background
-
-This package provides a set of Jupyter extensions intended to provide richer Anaconda
-integration with built-in support for conda environments (package sandboxes),
-conda environment/package management, support for sharing notebooks on 
-[anaconda.org](http://anaconda.org), and more.
-This bundle of extensions, or any individual extension, can be installed with just `conda install`.
-
-You can happily use Jupyter and Anaconda together **without** this package.
-Jupyter is included in the full Anaconda distribution, and is a dependency of
-this package.
-
-This is **not** a fork of Jupyter.  It is a set
-of tools and custom configuration of Jupyter that make it
-work in a way that will be beneficial for some users.  You still need 
-Jupyter installed in order to use these extensions.
-
-**NOTE**: This "bundle" is designed to encapsulate a set of extensions into a
-`conda` environment.  It also includes nb_config_manager, which directs Jupyter 
-to look in the current conda environment to pick up the set of conda-installable
-extensions.
-
 
 ## Feedback, Bugs, Support
+We love feedback!  Please open an
+[issue](https://github.com/Anaconda-Platform/anaconda-nb-extensions/issues) on
+this repo to give any feedback or open a PR on the individual extensions if you
+are ready to roll-up your sleeves and get coding!
 
-We love feedback.  Please open an issue on this repo to give any feedback or
-open a PR if you have some code-change suggestions.
-
-Found a bug? Open an issue.
-
-Support? The [Anaconda mailing list](https://groups.google.com/a/continuum.io/forum/#!forum/anaconda)
+## More support
+The [Anaconda mailing list](https://groups.google.com/a/continuum.io/forum/#!forum/anaconda)
 is the best place to go for support-related questions.
 
 ## Developers
-
 `anaconda-nb-extensions` is a meta-package specifying a set of sub-packages
 as a cohesive bundle.
 
 You can build your own version of the meta-package by doing:
 
 ```bash
-conda install conda-build
+conda install -n root conda-build
 conda build conda.recipe
 ```
 
-Then to install your locally built version:
-
-```
-conda install -c anaconda-nb-extensions --use-local anaconda-nb-extensions
+Then to install your locally-built version:
+```shell
+conda install anaconda-nb-extensions -c anaconda-nb-extensions --use-local
 ```
 
 To get the latest development packages you can use:
+```shell
+conda install anaconda-nb-extensions -c anaconda-nb-extensions -c anaconda-nb-extensions/label/dev
+```
 
-`conda install -c anaconda-nb-extensions -c anaconda-nb-extensions/channel/dev anaconda-nb-extensions`
-
-## How does this work?
-
-This package installs everything inside prefix. It means it will be completely
-isolated. The  `JUPYTER_CONFIG_DIR` lives in `<prefix>/etc/jupyter` (or the
-equivalent path for osx and win), whereas the `JUPYTER_DATA_DIR` lives in
-`<prefix>/share/jupyter` (or the equivalent path for osx and win).
-So, to have all the extensions available inside an specific conda environment,
-you should install the `anaconda-nb-extensions` package in that environment.
-Alternative, you can start the `jupyter notebook` in any environment and
-execute python command in other environment just changing the kernel and selecting
-the desired environment. In this case, the notebook server lives in the first
-environment (where you started the `jupyter notebook`), but the kernel lives in
-the environment you choose from the kernel menu.
-
-And to upload them to the `dev` channel:
-
-`anaconda upload -u anaconda-nb-extensions -dev path/to/the/package`
+> Note: we sometimes have pre-release versions of key upstream packages like
+`notebook` here: be sure you want to live on the bleeding edge!
