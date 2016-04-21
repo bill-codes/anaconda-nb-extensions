@@ -1,0 +1,6 @@
+name: anaconda-nb-extensions
+
+dependencies:
+  - notebook
+  - pyyaml
+  - anaconda-client
