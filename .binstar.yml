@@ -11,6 +11,6 @@ engine:
   - python=3.5
 
 script:
-  - conda build conda.recipe -c anaconda-nb-extensions -c javascript -c anaconda-nb-extensions/label/dev
+  - conda build conda.recipe -c javascript -c anaconda-nb-extensions
 
 build_targets: conda

@@ -81,3 +81,8 @@ _init_env.sh # or _init_env.bat
 
 This will create an `anaconda-nb-extensions` environment, and install/symlink
 all of the extensions.
+
+## Changelog
+
+### 1.0.0
+- update to notebook 4.2
