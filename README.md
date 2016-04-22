@@ -69,3 +69,15 @@ conda install anaconda-nb-extensions -c anaconda-nb-extensions -c anaconda-nb-ex
 
 > Note: we sometimes have pre-release versions of key upstream packages like
 `notebook` here: be sure you want to live on the bleeding edge!
+
+### Developing everything at once
+Sometimes, you may need to have live versions of all of the code available in
+a single environment. After checking all of the repos out as neighbors of this
+repo, run:
+
+```
+_init_env.sh # or _init_env.bat
+```
+
+This will create an `anaconda-nb-extensions` environment, and install/symlink
+all of the extensions.

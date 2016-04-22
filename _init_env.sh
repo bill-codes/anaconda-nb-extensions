@@ -2,7 +2,7 @@
 # you should already have checked out all the extensions as neighbors of
 # anaconda-nb-extensions
 
-conda env remove -n anaconda-nb-extensions || echo "fresh env!"
+conda env remove -yn anaconda-nb-extensions || echo "fresh env!"
 
 conda env update
 source activate anaconda-nb-extensions
